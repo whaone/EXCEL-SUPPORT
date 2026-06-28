@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kalkulator HPP Kaos — Kain & RIB</title>
+  <style>
+    :root {
+      --bg: #f3f5f9;
+      --card: #ffffff;
+      --ink: #1f2a44;
+      --muted: #6b7794;
+      --line: #e2e7f0;
+      --brand: #2e75b6;
+      --brand-dark: #1f4e78;
+      --accent: #e2efda;
+      --accent-ink: #2f7d32;
+      --warn: #fff2cc;
+      --danger: #c0392b;
+      --radius: 14px;
+      --shadow: 0 6px 22px rgba(31, 42, 68, .08);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.5;
+    }
+    header {
+      background: linear-gradient(135deg, var(--brand-dark), var(--brand));
+      color: #fff;
+      padding: 24px 20px;
+    }
+    header .wrap { max-width: 1080px; margin: 0 auto; }
+    header h1 { margin: 0 0 4px; font-size: 22px; }
+    header p { margin: 0; opacity: .9; font-size: 14px; }
+    .container { max-width: 1080px; margin: 0 auto; padding: 20px; }
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 20px;
+      margin-bottom: 20px;
+      border: 1px solid var(--line);
+    }
+    .step-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 13px; font-weight: 700; color: var(--brand-dark);
+      background: #ddebf7; padding: 4px 12px; border-radius: 999px;
+      margin-bottom: 6px;
+    }
+    .card h2 { margin: 6px 0 2px; font-size: 18px; }
+    .card .desc { color: var(--muted); font-size: 13px; margin: 0 0 16px; }
+    .grid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+    .field label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 5px; }
+    .field .hint { font-size: 11px; color: var(--muted); font-weight: 400; }
+    .field input, .field select {
+      width: 100%; padding: 10px 12px; border: 1px solid var(--line);
+      border-radius: 9px; font-size: 15px; background: #fbfcfe; color: var(--ink);
+    }
+    .field input:focus { outline: 2px solid var(--brand); background: #fff; }
+    .inline-out {
+      display: flex; justify-content: space-between; align-items: baseline;
+      padding: 8px 0; border-bottom: 1px dashed var(--line); font-size: 14px;
+    }
+    .inline-out span:last-child { font-weight: 700; font-variant-numeric: tabular-nums; }
+    .result-box {
+      margin-top: 16px; background: var(--accent); border: 1px solid #bfe0bf;
+      border-radius: 12px; padding: 14px 18px;
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;
+    }
+    .result-box .label { font-weight: 600; color: var(--accent-ink); }
+    .result-box .value { font-size: 24px; font-weight: 800; color: var(--accent-ink); font-variant-numeric: tabular-nums; }
+
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .table-scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; }
+    th, td { padding: 8px; text-align: right; border-bottom: 1px solid var(--line); white-space: nowrap; }
+    th { background: var(--brand); color: #fff; font-weight: 600; position: sticky; top: 0; }
+    th:first-child, td:first-child { text-align: center; }
+    td input { width: 100%; min-width: 80px; padding: 7px 8px; border: 1px solid var(--line); border-radius: 7px; text-align: right; font-size: 13px; }
+    td.text input { text-align: left; }
+    td.calc { font-weight: 700; font-variant-numeric: tabular-nums; background: #f3faf3; }
+    .row-del { background: none; border: none; color: var(--danger); cursor: pointer; font-size: 16px; line-height: 1; }
+    tfoot td { background: #eef3fb; font-weight: 800; font-variant-numeric: tabular-nums; }
+
+    .btn {
+      border: none; border-radius: 9px; padding: 10px 16px; font-size: 14px; font-weight: 600;
+      cursor: pointer; transition: .15s;
+    }
+    .btn-primary { background: var(--brand); color: #fff; }
+    .btn-primary:hover { background: var(--brand-dark); }
+    .btn-ghost { background: #eef1f7; color: var(--ink); }
+    .btn-ghost:hover { background: #e2e7f0; }
+    .toolbar { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+
+    .summary-grid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
+    .stat { background: #fbfcfe; border: 1px solid var(--line); border-radius: 12px; padding: 14px; }
+    .stat .k { font-size: 12px; color: var(--muted); margin-bottom: 4px; }
+    .stat .v { font-size: 20px; font-weight: 800; font-variant-numeric: tabular-nums; }
+    .stat.profit .v { color: var(--accent-ink); }
+    footer { text-align: center; color: var(--muted); font-size: 12px; padding: 24px; }
+    .note { font-size: 12px; color: var(--muted); margin-top: 10px; }
+    @media (max-width: 600px) { header h1 { font-size: 18px; } .result-box .value { font-size: 20px; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <h1>Kalkulator HPP Kaos</h1>
+      <p>Hitung HPP dari Kain &amp; RIB dulu, lalu tambahkan ongkos sablon, jahit, transport &amp; beban lainnya.</p>
+    </div>
+  </header>
+
+  <div class="container">
+
+    <!-- TAHAP 1 : HPP BAHAN (KAIN + RIB) -->
+    <section class="card">
+      <span class="step-badge">TAHAP 1</span>
+      <h2>HPP Bahan — Kain &amp; RIB</h2>
+      <p class="desc">Isi harga bahan per Kg dan kebutuhan per kaos (gram). Sistem menghitung biaya bahan per satu kaos.</p>
+
+      <h3 style="font-size:15px;margin:8px 0 10px;color:var(--brand-dark);">Kain Body</h3>
+      <div class="grid">
+        <div class="field">
+          <label>Harga Kain <span class="hint">(Rp / Kg)</span></label>
+          <input type="number" id="hargaKain" min="0" step="500" placeholder="contoh 95000" />
+        </div>
+        <div class="field">
+          <label>Kebutuhan Kain / kaos <span class="hint">(gram)</span></label>
+          <input type="number" id="gramKain" min="0" step="5" placeholder="contoh 250" />
+        </div>
+      </div>
+
+      <h3 style="font-size:15px;margin:18px 0 10px;color:var(--brand-dark);">RIB (Kerah / Manset)</h3>
+      <div class="grid">
+        <div class="field">
+          <label>Harga RIB <span class="hint">(Rp / Kg)</span></label>
+          <input type="number" id="hargaRib" min="0" step="500" placeholder="contoh 110000" />
+        </div>
+        <div class="field">
+          <label>Kebutuhan RIB / kaos <span class="hint">(gram)</span></label>
+          <input type="number" id="gramRib" min="0" step="1" placeholder="contoh 30" />
+        </div>
+      </div>
+
+      <div style="margin-top:16px;">
+        <div class="inline-out"><span>Biaya Kain / kaos</span><span id="outBiayaKain">Rp0</span></div>
+        <div class="inline-out"><span>Biaya RIB / kaos</span><span id="outBiayaRib">Rp0</span></div>
+      </div>
+
+      <div class="result-box">
+        <span class="label">HPP BAHAN per kaos (Kain + RIB)</span>
+        <span class="value" id="outHppBahan">Rp0</span>
+      </div>
+      <p class="note">Nilai ini menjadi dasar (biaya bahan) untuk setiap kaos di Tahap 2.</p>
+    </section>
+
+    <!-- TAHAP 2 : BEBAN PRODUKSI LAIN -->
+    <section class="card">
+      <span class="step-badge">TAHAP 2</span>
+      <h2>Tambah Beban Produksi (per Design)</h2>
+      <p class="desc">Satu warna kain bisa jadi beberapa design. Tambahkan baris design beserta ongkos sablon, jahit, dan biaya lainnya. HPP akhir = HPP Bahan + beban-beban ini.</p>
+
+      <div class="grid" style="margin-bottom:16px;">
+        <div class="field">
+          <label>Margin Keuntungan <span class="hint">(%)</span></label>
+          <input type="number" id="margin" min="0" step="1" value="40" />
+        </div>
+      </div>
+
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Design</th>
+              <th>Jumlah<br>(pcs)</th>
+              <th>Ongkos<br>Jahit /pcs</th>
+              <th>Ongkos<br>Sablon /pcs</th>
+              <th>Biaya Lain<br>/pcs</th>
+              <th>Transport<br>(batch)</th>
+              <th>HPP Bahan<br>/pcs</th>
+              <th>HPP Akhir<br>/pcs</th>
+              <th>Harga Jual<br>/pcs</th>
+              <th>Total Modal</th>
+              <th>Total Jual</th>
+              <th>Laba</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="designRows"></tbody>
+          <tfoot>
+            <tr>
+              <td colspan="2">TOTAL</td>
+              <td id="sumQty">0</td>
+              <td colspan="7"></td>
+              <td id="sumModal">Rp0</td>
+              <td id="sumJual">Rp0</td>
+              <td id="sumLaba">Rp0</td>
+              <td></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+
+      <div class="toolbar">
+        <button class="btn btn-primary" id="btnAdd">+ Tambah Design</button>
+        <button class="btn btn-ghost" id="btnSample">Isi Contoh</button>
+        <button class="btn btn-ghost" id="btnReset">Reset Semua</button>
+      </div>
+    </section>
+
+    <!-- RINGKASAN -->
+    <section class="card">
+      <h2>Ringkasan</h2>
+      <div class="summary-grid" style="margin-top:12px;">
+        <div class="stat"><div class="k">Total Produksi</div><div class="v" id="statQty">0 pcs</div></div>
+        <div class="stat"><div class="k">Total Modal (HPP)</div><div class="v" id="statModal">Rp0</div></div>
+        <div class="stat"><div class="k">Total Penjualan</div><div class="v" id="statJual">Rp0</div></div>
+        <div class="stat profit"><div class="k">Total Laba</div><div class="v" id="statLaba">Rp0</div></div>
+      </div>
+    </section>
+
+  </div>
+
+  <footer>Data tersimpan otomatis di browser ini (localStorage). &middot; Kalkulator HPP Kaos</footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
