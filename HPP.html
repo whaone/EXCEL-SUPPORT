@@ -28,7 +28,6 @@
       --shadow: 0 18px 48px -22px rgba(21, 32, 60, .35);
     }
     * { box-sizing: border-box; }
-    html { -webkit-text-size-adjust: 100%; }
     body {
       margin: 0;
       font-family: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -38,86 +37,77 @@
       min-height: 100vh;
     }
     .num { font-variant-numeric: tabular-nums; }
+    [hidden] { display: none !important; }
 
-    /* ---------- header ---------- */
+    /* header */
     header {
       position: relative;
       background: radial-gradient(1200px 400px at 80% -40%, #34487a 0%, transparent 60%), linear-gradient(135deg, var(--navy) 0%, var(--navy2) 100%);
-      color: #fff;
-      padding: 48px 20px 56px;
-      overflow: hidden;
+      color: #fff; padding: 48px 20px 56px; overflow: hidden;
       border-bottom: 1px solid rgba(176, 141, 79, .5);
     }
-    header::after {
-      content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 3px;
-      background: linear-gradient(90deg, transparent, var(--gold-2), transparent);
-    }
+    header::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: linear-gradient(90deg, transparent, var(--gold-2), transparent); }
     header .wrap { max-width: 1120px; margin: 0 auto; }
-    .eyebrow {
-      font-size: 12px; letter-spacing: .28em; text-transform: uppercase;
-      color: var(--gold-2); font-weight: 700; margin: 0 0 10px;
-    }
-    header h1 {
-      font-family: "Playfair Display", Georgia, serif;
-      font-weight: 600; font-size: clamp(28px, 5vw, 42px); margin: 0 0 10px; letter-spacing: .3px;
-    }
-    header p { margin: 0; max-width: 620px; color: #c7cee0; font-size: 15px; }
+    .eyebrow { font-size: 12px; letter-spacing: .28em; text-transform: uppercase; color: var(--gold-2); font-weight: 700; margin: 0 0 10px; }
+    header h1 { font-family: "Playfair Display", Georgia, serif; font-weight: 600; font-size: clamp(28px, 5vw, 42px); margin: 0 0 10px; letter-spacing: .3px; }
+    header p { margin: 0; max-width: 640px; color: #c7cee0; font-size: 15px; }
 
-    /* ---------- layout ---------- */
     .container { max-width: 1120px; margin: -28px auto 0; padding: 0 20px 48px; position: relative; }
-    .card {
-      background: var(--card);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      border: 1px solid var(--line);
-      padding: 28px;
-      margin-bottom: 24px;
-    }
+    .card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); border: 1px solid var(--line); padding: 28px; margin-bottom: 24px; }
     .card-head { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 22px; }
     .step-num {
-      flex: none; width: 42px; height: 42px; border-radius: 50%;
-      display: grid; place-items: center; font-weight: 800; font-size: 17px;
-      color: var(--navy); background: linear-gradient(145deg, var(--gold-2), var(--gold));
-      box-shadow: 0 6px 14px -4px rgba(176, 141, 79, .6);
+      flex: none; width: 42px; height: 42px; border-radius: 50%; display: grid; place-items: center;
+      font-weight: 800; font-size: 17px; color: var(--navy);
+      background: linear-gradient(145deg, var(--gold-2), var(--gold)); box-shadow: 0 6px 14px -4px rgba(176, 141, 79, .6);
     }
     .card-head .eb { font-size: 11px; letter-spacing: .22em; text-transform: uppercase; color: var(--gold); font-weight: 700; }
     .card-head h2 { font-family: "Playfair Display", Georgia, serif; font-weight: 600; font-size: 23px; margin: 2px 0 3px; }
     .card-head .desc { color: var(--muted); font-size: 13.5px; margin: 0; max-width: 720px; }
 
-    .subhead {
-      font-size: 12px; letter-spacing: .14em; text-transform: uppercase;
-      color: var(--navy2); font-weight: 700; margin: 22px 0 14px;
-      display: flex; align-items: center; gap: 10px;
+    /* mode switch */
+    .mode-switch { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); margin-bottom: 24px; }
+    .mode-card {
+      text-align: left; cursor: pointer; border: 1.5px solid var(--line); background: #fafbfd;
+      border-radius: 14px; padding: 16px 18px; display: flex; gap: 14px; align-items: flex-start;
+      font-family: inherit; transition: border-color .15s, box-shadow .15s, background .15s; color: var(--ink);
     }
+    .mode-card:hover { border-color: #d6c39a; }
+    .mode-card .mc-ico { flex: none; width: 40px; height: 40px; border-radius: 11px; display: grid; place-items: center; background: #eef1f8; color: var(--navy2); }
+    .mode-card .mc-ico svg { width: 21px; height: 21px; }
+    .mode-card .mc-t { font-weight: 700; font-size: 15px; margin-bottom: 2px; }
+    .mode-card .mc-d { font-size: 12px; color: var(--muted); line-height: 1.45; }
+    .mode-card.active { border-color: var(--gold); background: var(--gold-soft); box-shadow: 0 0 0 3px rgba(176,141,79,.12); }
+    .mode-card.active .mc-ico { background: linear-gradient(145deg, var(--gold-2), var(--gold)); color: var(--navy); }
+
+    .subhead { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--navy2); font-weight: 700; margin: 22px 0 14px; display: flex; align-items: center; gap: 10px; }
     .subhead::after { content: ""; flex: 1; height: 1px; background: var(--line); }
     .subhead svg { width: 16px; height: 16px; color: var(--gold); }
 
     .grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); }
     .field label { display: block; font-size: 12px; font-weight: 600; letter-spacing: .02em; margin-bottom: 7px; color: #3b455f; }
     .field .hint { font-size: 11px; color: var(--muted); font-weight: 500; }
-    .field input, .field select {
-      width: 100%; padding: 12px 14px; border: 1px solid var(--line); border-radius: 11px;
-      font-size: 15px; font-family: inherit; background: #fafbfd; color: var(--ink);
-      transition: border-color .15s, box-shadow .15s, background .15s;
+    .field input {
+      width: 100%; padding: 12px 14px; border: 1px solid var(--line); border-radius: 11px; font-size: 15px;
+      font-family: inherit; background: #fafbfd; color: var(--ink); transition: border-color .15s, box-shadow .15s, background .15s;
     }
     .field input:hover { border-color: #d4d8e4; }
-    .field input:focus {
-      outline: none; border-color: var(--gold); background: #fff;
-      box-shadow: 0 0 0 4px rgba(176, 141, 79, .14);
-    }
+    .field input:focus { outline: none; border-color: var(--gold); background: #fff; box-shadow: 0 0 0 4px rgba(176, 141, 79, .14); }
 
-    .inline-out {
-      display: flex; justify-content: space-between; align-items: baseline;
-      padding: 11px 2px; border-bottom: 1px dashed var(--line); font-size: 14px; color: #4b5670;
-    }
+    .inline-out { display: flex; justify-content: space-between; align-items: baseline; padding: 11px 2px; border-bottom: 1px dashed var(--line); font-size: 14px; color: #4b5670; }
     .inline-out span:last-child { font-weight: 700; color: var(--ink); }
 
-    /* hero result */
+    /* buy-box (analisa) */
+    .buy-box { margin-top: 18px; background: var(--gold-soft); border: 1px solid #e7dcc2; border-radius: 14px; padding: 16px 18px; }
+    .buy-box .bt { font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--gold); font-weight: 700; margin-bottom: 12px; }
+    .buy-grid { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+    .buy-grid .bi { background: #fff; border: 1px solid #efe6d2; border-radius: 11px; padding: 12px 14px; }
+    .buy-grid .bi .k { font-size: 11.5px; color: var(--muted); font-weight: 600; margin-bottom: 4px; }
+    .buy-grid .bi .v { font-size: 18px; font-weight: 800; }
+
     .result-hero {
       margin-top: 18px;
       background: radial-gradient(700px 200px at 100% 0%, rgba(202,168,105,.25), transparent 55%), linear-gradient(135deg, var(--navy), var(--navy2));
-      border-radius: 16px; padding: 22px 26px; color: #fff;
-      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
+      border-radius: 16px; padding: 22px 26px; color: #fff; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
       box-shadow: 0 16px 34px -18px rgba(21,32,60,.7);
     }
     .result-hero .label { font-size: 12.5px; letter-spacing: .12em; text-transform: uppercase; color: #cdd4e6; font-weight: 600; }
@@ -126,63 +116,35 @@
     .note { font-size: 12px; color: var(--muted); margin-top: 12px; }
     .note b { color: var(--gold); }
 
-    /* table */
     .table-scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow-sm); }
     table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 920px; }
     th, td { padding: 11px 10px; text-align: right; border-bottom: 1px solid var(--line); white-space: nowrap; }
-    thead th {
-      background: linear-gradient(180deg, var(--navy2), var(--navy)); color: #eef1f8;
-      font-weight: 600; font-size: 11.5px; letter-spacing: .02em; position: sticky; top: 0;
-      border-bottom: none; line-height: 1.25;
-    }
-    thead th:first-child { border-top-left-radius: 0; }
+    thead th { background: linear-gradient(180deg, var(--navy2), var(--navy)); color: #eef1f8; font-weight: 600; font-size: 11.5px; letter-spacing: .02em; position: sticky; top: 0; border-bottom: none; line-height: 1.25; }
     th:first-child, td:first-child { text-align: center; color: var(--muted); }
     tbody tr:nth-child(even) { background: #fafbfd; }
     tbody tr:hover { background: var(--gold-soft); }
-    td input {
-      width: 100%; min-width: 78px; padding: 8px 9px; border: 1px solid var(--line);
-      border-radius: 8px; text-align: right; font-size: 13px; font-family: inherit; background: #fff;
-      transition: border-color .15s, box-shadow .15s;
-    }
+    td input { width: 100%; min-width: 78px; padding: 8px 9px; border: 1px solid var(--line); border-radius: 8px; text-align: right; font-size: 13px; font-family: inherit; background: #fff; transition: border-color .15s, box-shadow .15s; }
     td input:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 3px rgba(176,141,79,.13); }
     td.text input { text-align: left; }
     td.calc { font-weight: 700; color: var(--ink); background: rgba(176,141,79,.06); }
     td.calc.profit { color: var(--emerald); }
-    .row-del {
-      background: none; border: none; color: #c6ccd9; cursor: pointer; font-size: 20px; line-height: 1;
-      transition: color .15s; padding: 0 4px;
-    }
+    .row-del { background: none; border: none; color: #c6ccd9; cursor: pointer; font-size: 20px; line-height: 1; transition: color .15s; padding: 0 4px; }
     .row-del:hover { color: var(--danger); }
     tfoot td { background: #f1f3f9; font-weight: 800; border-bottom: none; }
     tfoot td:first-child { border-bottom-left-radius: 14px; }
 
-    /* buttons */
     .toolbar { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 18px; }
-    .btn {
-      border: 1px solid transparent; border-radius: 11px; padding: 11px 20px;
-      font-size: 14px; font-weight: 600; font-family: inherit; cursor: pointer;
-      transition: transform .12s, box-shadow .15s, background .15s, border-color .15s;
-      display: inline-flex; align-items: center; gap: 8px;
-    }
+    .btn { border: 1px solid transparent; border-radius: 11px; padding: 11px 20px; font-size: 14px; font-weight: 600; font-family: inherit; cursor: pointer; transition: transform .12s, box-shadow .15s, background .15s, border-color .15s; display: inline-flex; align-items: center; gap: 8px; }
     .btn:active { transform: translateY(1px); }
     .btn svg { width: 16px; height: 16px; }
-    .btn-primary { background: var(--navy); color: #fff; box-shadow: 0 10px 20px -10px rgba(21,32,60,.7); }
-    .btn-primary:hover { background: #1d2b4e; }
     .btn-gold { background: linear-gradient(145deg, var(--gold-2), var(--gold)); color: var(--navy); }
     .btn-gold:hover { filter: brightness(1.04); }
     .btn-ghost { background: #fff; color: #4b5670; border-color: var(--line); }
     .btn-ghost:hover { border-color: #cfd4e1; background: #fafbfd; }
 
-    /* summary */
     .summary-grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
-    .stat {
-      position: relative; background: #fafbfd; border: 1px solid var(--line);
-      border-radius: 14px; padding: 18px 18px 16px; overflow: hidden;
-    }
-    .stat .ico {
-      position: absolute; top: 16px; right: 16px; width: 30px; height: 30px; opacity: .9;
-      display: grid; place-items: center; border-radius: 9px; color: var(--navy2); background: #eef1f8;
-    }
+    .stat { position: relative; background: #fafbfd; border: 1px solid var(--line); border-radius: 14px; padding: 18px 18px 16px; overflow: hidden; }
+    .stat .ico { position: absolute; top: 16px; right: 16px; width: 30px; height: 30px; display: grid; place-items: center; border-radius: 9px; color: var(--navy2); background: #eef1f8; }
     .stat .ico svg { width: 17px; height: 17px; }
     .stat .k { font-size: 12px; color: var(--muted); margin-bottom: 6px; font-weight: 600; letter-spacing: .02em; }
     .stat .v { font-size: 22px; font-weight: 800; }
@@ -192,11 +154,7 @@
 
     footer { text-align: center; color: var(--muted); font-size: 12px; padding: 8px 20px 40px; }
     footer .dot { color: var(--gold); }
-    @media (max-width: 600px) {
-      header { padding: 36px 18px 48px; }
-      .card { padding: 20px; }
-      .result-hero .value { font-size: 26px; }
-    }
+    @media (max-width: 600px) { header { padding: 36px 18px 48px; } .card { padding: 20px; } .result-hero .value { font-size: 26px; } }
   </style>
 </head>
 <body>
@@ -204,7 +162,7 @@
     <div class="wrap">
       <p class="eyebrow">Konveksi &amp; Sablon</p>
       <h1>Kalkulator HPP Kaos</h1>
-      <p>Hitung harga pokok produksi secara bertahap — mulai dari bahan Kain &amp; RIB, lalu lengkapi dengan ongkos sablon, jahit, transport, dan beban lainnya.</p>
+      <p>Pilih skenario lebih dulu — hitung HPP dari produksi yang sudah jalan, atau analisa kebutuhan bahan yang akan dibeli. Lalu lengkapi dengan ongkos sablon, jahit, transport, dan beban lainnya.</p>
     </div>
   </header>
 
@@ -216,46 +174,101 @@
         <div class="step-num">1</div>
         <div>
           <div class="eb">Tahap Satu</div>
-          <h2>HPP Bahan — Kain &amp; RIB</h2>
-          <p class="desc">Isi harga bahan per Kg dan kebutuhan per kaos (gram). Sistem menghitung biaya bahan untuk satu kaos.</p>
+          <h2>Skenario &amp; HPP Bahan (Kain &amp; RIB)</h2>
+          <p class="desc">Pilih salah satu skenario di bawah. Form akan menyesuaikan dengan cara hitung yang sesuai.</p>
         </div>
       </div>
 
-      <div class="subhead">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7l9-4 9 4-9 4-9-4zM3 7v10l9 4 9-4V7"/></svg>
-        Kain Body
-      </div>
-      <div class="grid">
-        <div class="field">
-          <label>Harga Kain <span class="hint">(Rp / Kg)</span></label>
-          <input type="number" id="hargaKain" min="0" step="500" placeholder="contoh 95000" />
-        </div>
-        <div class="field">
-          <label>Kebutuhan Kain / kaos <span class="hint">(gram)</span></label>
-          <input type="number" id="gramKain" min="0" step="5" placeholder="contoh 250" />
-        </div>
-      </div>
-
-      <div class="subhead">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M6 7l1.5 12h9L18 7M9 7V5a3 3 0 0 1 6 0v2"/></svg>
-        RIB — Kerah / Manset
-      </div>
-      <div class="grid">
-        <div class="field">
-          <label>Harga RIB <span class="hint">(Rp / Kg)</span></label>
-          <input type="number" id="hargaRib" min="0" step="500" placeholder="contoh 110000" />
-        </div>
-        <div class="field">
-          <label>Kebutuhan RIB / kaos <span class="hint">(gram)</span></label>
-          <input type="number" id="gramRib" min="0" step="1" placeholder="contoh 30" />
-        </div>
+      <!-- pilihan skenario -->
+      <div class="mode-switch">
+        <button type="button" class="mode-card active" data-mode="produksi" id="modeProduksi">
+          <span class="mc-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3 8-8"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span>
+          <span>
+            <span class="mc-t">Sudah Produksi</span>
+            <span class="mc-d">Hitung HPP dari realisasi pembelian: harga/Kg &times; Kg dibeli &divide; jumlah kaos.</span>
+          </span>
+        </button>
+        <button type="button" class="mode-card" data-mode="analisa" id="modeAnalisa">
+          <span class="mc-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 14l4-4 3 3 5-6"/></svg></span>
+          <span>
+            <span class="mc-t">Analisa Kebutuhan</span>
+            <span class="mc-d">Rencanakan berapa Kg bahan yang harus dibeli untuk target produksi.</span>
+          </span>
+        </button>
       </div>
 
+      <!-- ============ FORM: SUDAH PRODUKSI ============ -->
+      <div id="formProduksi">
+        <div class="subhead">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7l9-4 9 4-9 4-9-4zM3 7v10l9 4 9-4V7"/></svg>
+          Kain Body
+        </div>
+        <div class="grid">
+          <div class="field"><label>Harga Kain <span class="hint">(Rp / Kg)</span></label><input type="number" id="hargaKainP" min="0" step="500" placeholder="contoh 95000" /></div>
+          <div class="field"><label>Jumlah Kain Dibeli <span class="hint">(Kg)</span></label><input type="number" id="kgKainP" min="0" step="0.1" placeholder="contoh 30" /></div>
+        </div>
+
+        <div class="subhead">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M6 7l1.5 12h9L18 7M9 7V5a3 3 0 0 1 6 0v2"/></svg>
+          RIB — Kerah / Manset
+        </div>
+        <div class="grid">
+          <div class="field"><label>Harga RIB <span class="hint">(Rp / Kg)</span></label><input type="number" id="hargaRibP" min="0" step="500" placeholder="contoh 110000" /></div>
+          <div class="field"><label>Jumlah RIB Dibeli <span class="hint">(Kg)</span></label><input type="number" id="kgRibP" min="0" step="0.1" placeholder="contoh 3.6" /></div>
+        </div>
+
+        <div class="subhead">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7L12 3 4 7v10l8 4 8-4V7zM4 7l8 4 8-4"/></svg>
+          Hasil Produksi
+        </div>
+        <div class="grid" style="max-width:360px;">
+          <div class="field"><label>Jumlah Kaos Jadi <span class="hint">(pcs, dari kain ini)</span></label><input type="number" id="jumlahKaosP" min="0" step="1" placeholder="contoh 120" /></div>
+        </div>
+        <p class="note">Rumus: <b>(Harga/Kg &times; Kg dibeli) &divide; Jumlah kaos jadi</b> &mdash; persis perhitungan manualmu.</p>
+      </div>
+
+      <!-- ============ FORM: ANALISA KEBUTUHAN ============ -->
+      <div id="formAnalisa" hidden>
+        <div class="grid" style="max-width:360px;">
+          <div class="field"><label>Target Jumlah Kaos <span class="hint">(pcs yang akan dibuat)</span></label><input type="number" id="targetKaosA" min="0" step="1" placeholder="contoh 120" /></div>
+        </div>
+
+        <div class="subhead">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7l9-4 9 4-9 4-9-4zM3 7v10l9 4 9-4V7"/></svg>
+          Kain Body
+        </div>
+        <div class="grid">
+          <div class="field"><label>Harga Kain <span class="hint">(Rp / Kg)</span></label><input type="number" id="hargaKainA" min="0" step="500" placeholder="contoh 95000" /></div>
+          <div class="field"><label>Kebutuhan Kain / kaos <span class="hint">(gram)</span></label><input type="number" id="gramKainA" min="0" step="5" placeholder="contoh 250" /></div>
+        </div>
+
+        <div class="subhead">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M6 7l1.5 12h9L18 7M9 7V5a3 3 0 0 1 6 0v2"/></svg>
+          RIB — Kerah / Manset
+        </div>
+        <div class="grid">
+          <div class="field"><label>Harga RIB <span class="hint">(Rp / Kg)</span></label><input type="number" id="hargaRibA" min="0" step="500" placeholder="contoh 110000" /></div>
+          <div class="field"><label>Kebutuhan RIB / kaos <span class="hint">(gram)</span></label><input type="number" id="gramRibA" min="0" step="1" placeholder="contoh 30" /></div>
+        </div>
+
+        <div class="buy-box">
+          <div class="bt">Estimasi Belanja Bahan untuk target produksi</div>
+          <div class="buy-grid">
+            <div class="bi"><div class="k">Kain perlu dibeli</div><div class="v num" id="buyKgKain">0 Kg</div></div>
+            <div class="bi"><div class="k">RIB perlu dibeli</div><div class="v num" id="buyKgRib">0 Kg</div></div>
+            <div class="bi"><div class="k">Biaya Kain</div><div class="v num" id="buyBiayaKain">Rp0</div></div>
+            <div class="bi"><div class="k">Biaya RIB</div><div class="v num" id="buyBiayaRib">Rp0</div></div>
+            <div class="bi"><div class="k">Total Belanja Bahan</div><div class="v num" id="buyTotal">Rp0</div></div>
+          </div>
+        </div>
+        <p class="note">Rumus per kaos: <b>Harga/Kg &times; (gram &divide; 1000)</b>. Kebutuhan beli = gram &times; target &divide; 1000.</p>
+      </div>
+
+      <!-- output bersama -->
       <div style="margin-top:18px;">
         <div class="inline-out"><span>Biaya Kain / kaos</span><span class="num" id="outBiayaKain">Rp0</span></div>
         <div class="inline-out"><span>Biaya RIB / kaos</span><span class="num" id="outBiayaRib">Rp0</span></div>
       </div>
-
       <div class="result-hero">
         <span class="label">HPP Bahan per kaos<small>Kain + RIB</small></span>
         <span class="value num" id="outHppBahan">Rp0</span>
@@ -275,30 +288,17 @@
       </div>
 
       <div class="grid" style="margin-bottom:18px; max-width:320px;">
-        <div class="field">
-          <label>Margin Keuntungan <span class="hint">(%)</span></label>
-          <input type="number" id="margin" min="0" step="1" value="40" />
-        </div>
+        <div class="field"><label>Margin Keuntungan <span class="hint">(%)</span></label><input type="number" id="margin" min="0" step="1" value="40" /></div>
       </div>
 
       <div class="table-scroll">
         <table>
           <thead>
             <tr>
-              <th>#</th>
-              <th>Design</th>
-              <th>Jumlah<br>(pcs)</th>
-              <th>Ongkos<br>Jahit /pcs</th>
-              <th>Ongkos<br>Sablon /pcs</th>
-              <th>Biaya Lain<br>/pcs</th>
-              <th>Transport<br>(batch)</th>
-              <th>HPP Bahan<br>/pcs</th>
-              <th>HPP Akhir<br>/pcs</th>
-              <th>Harga Jual<br>/pcs</th>
-              <th>Total Modal</th>
-              <th>Total Jual</th>
-              <th>Laba</th>
-              <th></th>
+              <th>#</th><th>Design</th><th>Jumlah<br>(pcs)</th><th>Ongkos<br>Jahit /pcs</th>
+              <th>Ongkos<br>Sablon /pcs</th><th>Biaya Lain<br>/pcs</th><th>Transport<br>(batch)</th>
+              <th>HPP Bahan<br>/pcs</th><th>HPP Akhir<br>/pcs</th><th>Harga Jual<br>/pcs</th>
+              <th>Total Modal</th><th>Total Jual</th><th>Laba</th><th></th>
             </tr>
           </thead>
           <tbody id="designRows"></tbody>
@@ -317,18 +317,9 @@
       </div>
 
       <div class="toolbar">
-        <button class="btn btn-gold" id="btnAdd">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14M5 12h14"/></svg>
-          Tambah Design
-        </button>
-        <button class="btn btn-ghost" id="btnSample">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/></svg>
-          Isi Contoh
-        </button>
-        <button class="btn btn-ghost" id="btnReset">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 3-6.7M3 4v4h4"/></svg>
-          Reset Semua
-        </button>
+        <button class="btn btn-gold" id="btnAdd"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14M5 12h14"/></svg>Tambah Design</button>
+        <button class="btn btn-ghost" id="btnSample"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/></svg>Isi Contoh</button>
+        <button class="btn btn-ghost" id="btnReset"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 3-6.7M3 4v4h4"/></svg>Reset Semua</button>
       </div>
     </section>
 
@@ -336,28 +327,13 @@
     <section class="card">
       <div class="card-head" style="margin-bottom:8px;">
         <div class="step-num" style="background:linear-gradient(145deg,#3a4b78,#2a3a63);color:#fff;">&Sigma;</div>
-        <div>
-          <div class="eb">Rekap</div>
-          <h2>Ringkasan Produksi</h2>
-        </div>
+        <div><div class="eb">Rekap</div><h2>Ringkasan Produksi</h2></div>
       </div>
       <div class="summary-grid" style="margin-top:14px;">
-        <div class="stat">
-          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7L12 3 4 7v10l8 4 8-4V7zM4 7l8 4 8-4M12 11v10"/></svg></div>
-          <div class="k">Total Produksi</div><div class="v num" id="statQty">0 pcs</div>
-        </div>
-        <div class="stat">
-          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
-          <div class="k">Total Modal (HPP)</div><div class="v num" id="statModal">Rp0</div>
-        </div>
-        <div class="stat">
-          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18M7 14l4-4 3 3 5-6"/></svg></div>
-          <div class="k">Total Penjualan</div><div class="v num" id="statJual">Rp0</div>
-        </div>
-        <div class="stat profit">
-          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17l6-6 4 4 8-8M21 7h-5M21 7v5"/></svg></div>
-          <div class="k">Total Laba</div><div class="v num" id="statLaba">Rp0</div>
-        </div>
+        <div class="stat"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7L12 3 4 7v10l8 4 8-4V7zM4 7l8 4 8-4M12 11v10"/></svg></div><div class="k">Total Produksi</div><div class="v num" id="statQty">0 pcs</div></div>
+        <div class="stat"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div><div class="k">Total Modal (HPP)</div><div class="v num" id="statModal">Rp0</div></div>
+        <div class="stat"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18M7 14l4-4 3 3 5-6"/></svg></div><div class="k">Total Penjualan</div><div class="v num" id="statJual">Rp0</div></div>
+        <div class="stat profit"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17l6-6 4 4 8-8M21 7h-5M21 7v5"/></svg></div><div class="k">Total Laba</div><div class="v num" id="statLaba">Rp0</div></div>
       </div>
     </section>
 
@@ -368,34 +344,74 @@
   <script>
   /* =========================================================================
      Kalkulator HPP Kaos (inline)
-     TAHAP 1  HPP Bahan = Biaya Kain/kaos + Biaya RIB/kaos
-                Biaya bahan = (harga per Kg) x (gram per kaos / 1000)
-     TAHAP 2  HPP Akhir/pcs = HPP Bahan + Jahit + Sablon + Lain
-                             + (Transport batch / Jumlah pcs)
-                Harga Jual/pcs = HPP Akhir x (1 + Margin%)
-     Data disimpan otomatis di localStorage.
+
+     MODE "produksi" (sudah produksi / realisasi):
+        Biaya Kain/kaos = (Harga Kain/Kg x Kg kain dibeli) / Jumlah kaos jadi
+        Biaya RIB/kaos  = (Harga RIB/Kg x Kg RIB dibeli)  / Jumlah kaos jadi
+     MODE "analisa" (rencana beli):
+        Biaya Kain/kaos = Harga Kain/Kg x (gram kain / 1000)
+        Biaya RIB/kaos  = Harga RIB/Kg  x (gram RIB / 1000)
+        + estimasi Kg yang perlu dibeli untuk target produksi.
+
+     HPP Bahan/kaos = Biaya Kain/kaos + Biaya RIB/kaos
+
+     TAHAP 2:
+        HPP Akhir/pcs = HPP Bahan + Jahit + Sablon + Lain + (Transport / Jumlah)
+        Harga Jual/pcs = HPP Akhir x (1 + Margin%)
      ========================================================================= */
   (function () {
     "use strict";
-    var STORAGE_KEY = "hpp-kaos-v1";
+    var STORAGE_KEY = "hpp-kaos-v2";
+    var mode = "produksi";
 
     function $(id) { return document.getElementById(id); }
     function toNum(v) { var n = parseFloat(v); return isFinite(n) && n > 0 ? n : 0; }
 
     var rupiah = new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 });
     function formatRp(n) { if (!isFinite(n)) n = 0; return rupiah.format(Math.round(n)); }
+    function formatKg(n) { if (!isFinite(n)) n = 0; return n.toLocaleString("id-ID", { maximumFractionDigits: 2 }) + " Kg"; }
 
     /* ---------- TAHAP 1 : HPP Bahan ---------- */
-    function biayaPerKaos(hargaPerKg, gramPerKaos) { return hargaPerKg * (gramPerKaos / 1000); }
-
     function hitungHppBahan() {
-      var biayaKain = biayaPerKaos(toNum($("hargaKain").value), toNum($("gramKain").value));
-      var biayaRib = biayaPerKaos(toNum($("hargaRib").value), toNum($("gramRib").value));
-      var hppBahan = biayaKain + biayaRib;
-      $("outBiayaKain").textContent = formatRp(biayaKain);
-      $("outBiayaRib").textContent = formatRp(biayaRib);
+      var biayaKainPer = 0, biayaRibPer = 0;
+
+      if (mode === "produksi") {
+        var jumlah = toNum($("jumlahKaosP").value);
+        var totalKain = toNum($("hargaKainP").value) * toNum($("kgKainP").value);
+        var totalRib = toNum($("hargaRibP").value) * toNum($("kgRibP").value);
+        biayaKainPer = jumlah > 0 ? totalKain / jumlah : 0;
+        biayaRibPer = jumlah > 0 ? totalRib / jumlah : 0;
+      } else {
+        var hKain = toNum($("hargaKainA").value), gKain = toNum($("gramKainA").value);
+        var hRib = toNum($("hargaRibA").value), gRib = toNum($("gramRibA").value);
+        biayaKainPer = hKain * (gKain / 1000);
+        biayaRibPer = hRib * (gRib / 1000);
+
+        var target = toNum($("targetKaosA").value);
+        var kgKain = gKain * target / 1000;
+        var kgRib = gRib * target / 1000;
+        $("buyKgKain").textContent = formatKg(kgKain);
+        $("buyKgRib").textContent = formatKg(kgRib);
+        $("buyBiayaKain").textContent = formatRp(biayaKainPer * target);
+        $("buyBiayaRib").textContent = formatRp(biayaRibPer * target);
+        $("buyTotal").textContent = formatRp((biayaKainPer + biayaRibPer) * target);
+      }
+
+      var hppBahan = biayaKainPer + biayaRibPer;
+      $("outBiayaKain").textContent = formatRp(biayaKainPer);
+      $("outBiayaRib").textContent = formatRp(biayaRibPer);
       $("outHppBahan").textContent = formatRp(hppBahan);
       return hppBahan;
+    }
+
+    /* ---------- mode switch ---------- */
+    function setMode(m) {
+      mode = (m === "analisa") ? "analisa" : "produksi";
+      $("modeProduksi").classList.toggle("active", mode === "produksi");
+      $("modeAnalisa").classList.toggle("active", mode === "analisa");
+      $("formProduksi").hidden = mode !== "produksi";
+      $("formAnalisa").hidden = mode !== "analisa";
+      recalcAll();
     }
 
     /* ---------- TAHAP 2 : baris design ---------- */
@@ -406,11 +422,11 @@
       var tr = document.createElement("tr");
       tr.innerHTML =
         '<td class="rownum"></td>' +
-        '<td class="text"><input type="text"   class="f-nama"      placeholder="Nama design"></td>' +
-        '<td><input type="number" class="f-jumlah"   min="0" step="1"   placeholder="0"></td>' +
-        '<td><input type="number" class="f-jahit"    min="0" step="500" placeholder="0"></td>' +
-        '<td><input type="number" class="f-sablon"   min="0" step="500" placeholder="0"></td>' +
-        '<td><input type="number" class="f-lain"     min="0" step="500" placeholder="0"></td>' +
+        '<td class="text"><input type="text"   class="f-nama"       placeholder="Nama design"></td>' +
+        '<td><input type="number" class="f-jumlah"    min="0" step="1"    placeholder="0"></td>' +
+        '<td><input type="number" class="f-jahit"     min="0" step="500"  placeholder="0"></td>' +
+        '<td><input type="number" class="f-sablon"    min="0" step="500"  placeholder="0"></td>' +
+        '<td><input type="number" class="f-lain"      min="0" step="500"  placeholder="0"></td>' +
         '<td><input type="number" class="f-transport" min="0" step="1000" placeholder="0"></td>' +
         '<td class="calc o-hppbahan">Rp0</td>' +
         '<td class="calc o-hppakhir">Rp0</td>' +
@@ -429,8 +445,7 @@
 
       tr.addEventListener("input", recalcAll);
       tr.querySelector(".row-del").addEventListener("click", function () {
-        tr.parentNode.removeChild(tr);
-        recalcAll();
+        tr.parentNode.removeChild(tr); recalcAll();
       });
 
       tbody.appendChild(tr);
@@ -448,7 +463,6 @@
       var transportPerPcs = jumlah > 0 ? transport / jumlah : 0;
       var hppAkhir = hppBahan + jahit + sablon + lain + transportPerPcs;
       var hargaJual = hppAkhir * (1 + margin);
-
       var totalModal = hppAkhir * jumlah;
       var totalJual = hargaJual * jumlah;
       var laba = totalJual - totalModal;
@@ -484,6 +498,9 @@
     }
 
     /* ---------- simpan / muat ---------- */
+    var FIELD_IDS = ["hargaKainP","kgKainP","hargaRibP","kgRibP","jumlahKaosP",
+                     "targetKaosA","hargaKainA","gramKainA","hargaRibA","gramRibA","margin"];
+
     function collectState() {
       var rows = [];
       tbody.querySelectorAll("tr").forEach(function (tr) {
@@ -496,31 +513,31 @@
           transport: tr.querySelector(".f-transport").value
         });
       });
-      return {
-        hargaKain: $("hargaKain").value, gramKain: $("gramKain").value,
-        hargaRib: $("hargaRib").value, gramRib: $("gramRib").value,
-        margin: $("margin").value, rows: rows
-      };
+      var f = {};
+      FIELD_IDS.forEach(function (id) { f[id] = $(id).value; });
+      return { mode: mode, fields: f, rows: rows };
     }
     function save() { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(collectState())); } catch (e) {} }
+
     function load() {
       var raw; try { raw = localStorage.getItem(STORAGE_KEY); } catch (e) { raw = null; }
       if (!raw) return false;
       var s; try { s = JSON.parse(raw); } catch (e) { return false; }
-      $("hargaKain").value = s.hargaKain || "";
-      $("gramKain").value = s.gramKain || "";
-      $("hargaRib").value = s.hargaRib || "";
-      $("gramRib").value = s.gramRib || "";
-      $("margin").value = (s.margin !== undefined && s.margin !== "") ? s.margin : 40;
+      var f = s.fields || {};
+      FIELD_IDS.forEach(function (id) { if (f[id] !== undefined) $(id).value = f[id]; });
+      if (!$("margin").value) $("margin").value = 40;
       tbody.innerHTML = "";
       (s.rows && s.rows.length ? s.rows : [{}]).forEach(createRow);
+      mode = (s.mode === "analisa") ? "analisa" : "produksi";
       return true;
     }
 
     /* ---------- contoh & reset ---------- */
     function fillSample() {
-      $("hargaKain").value = 95000; $("gramKain").value = 250;
-      $("hargaRib").value = 110000; $("gramRib").value = 30;
+      setMode("produksi");
+      $("hargaKainP").value = 95000; $("kgKainP").value = 30;
+      $("hargaRibP").value = 110000; $("kgRibP").value = 3.6;
+      $("jumlahKaosP").value = 120;
       $("margin").value = 40;
       tbody.innerHTML = "";
       createRow({ nama: "Logo Depan 1 Warna", jumlah: 50, jahit: 8000, sablon: 7000, lain: 3000, transport: 25000 });
@@ -531,20 +548,20 @@
     function resetAll() {
       if (!confirm("Hapus semua data dan mulai dari kosong?")) return;
       try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
-      ["hargaKain", "gramKain", "hargaRib", "gramRib"].forEach(function (id) { $(id).value = ""; });
-      $("margin").value = 40;
-      tbody.innerHTML = ""; createRow({}); recalcAll();
+      FIELD_IDS.forEach(function (id) { $(id).value = (id === "margin") ? 40 : ""; });
+      tbody.innerHTML = ""; createRow({}); setMode("produksi");
     }
 
     function init() {
+      $("modeProduksi").addEventListener("click", function () { setMode("produksi"); });
+      $("modeAnalisa").addEventListener("click", function () { setMode("analisa"); });
       $("btnAdd").addEventListener("click", function () { createRow({}); recalcAll(); });
       $("btnSample").addEventListener("click", fillSample);
       $("btnReset").addEventListener("click", resetAll);
-      ["hargaKain", "gramKain", "hargaRib", "gramRib", "margin"].forEach(function (id) {
-        $(id).addEventListener("input", recalcAll);
-      });
+      FIELD_IDS.forEach(function (id) { $(id).addEventListener("input", recalcAll); });
+
       if (!load()) { createRow({}); }
-      recalcAll();
+      setMode(mode);   // terapkan tampilan sesuai mode tersimpan + recalc
     }
 
     if (document.readyState === "loading") {
