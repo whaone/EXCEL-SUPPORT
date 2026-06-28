@@ -3,125 +3,228 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Kalkulator HPP Kaos — Kain & RIB</title>
+  <title>Kalkulator HPP Kaos — Kain &amp; RIB</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg: #f3f5f9;
+      --bg1: #f5f6fa;
+      --bg2: #eceef4;
       --card: #ffffff;
-      --ink: #1f2a44;
-      --muted: #6b7794;
-      --line: #e2e7f0;
-      --brand: #2e75b6;
-      --brand-dark: #1f4e78;
-      --accent: #e2efda;
-      --accent-ink: #2f7d32;
-      --warn: #fff2cc;
+      --ink: #18203a;
+      --muted: #8089a0;
+      --line: #e8eaf1;
+      --navy: #15203c;
+      --navy2: #2a3a63;
+      --gold: #b08d4f;
+      --gold-2: #caa869;
+      --gold-soft: #f7f1e6;
+      --emerald: #0f7a5f;
+      --emerald-soft: #e7f4ef;
       --danger: #c0392b;
-      --radius: 14px;
-      --shadow: 0 6px 22px rgba(31, 42, 68, .08);
+      --radius: 18px;
+      --shadow-sm: 0 2px 8px rgba(21, 32, 60, .05);
+      --shadow: 0 18px 48px -22px rgba(21, 32, 60, .35);
     }
     * { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
     body {
       margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background: var(--bg);
+      font-family: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: linear-gradient(180deg, var(--bg1), var(--bg2));
       color: var(--ink);
-      line-height: 1.5;
+      line-height: 1.55;
+      min-height: 100vh;
     }
+    .num { font-variant-numeric: tabular-nums; }
+
+    /* ---------- header ---------- */
     header {
-      background: linear-gradient(135deg, var(--brand-dark), var(--brand));
+      position: relative;
+      background: radial-gradient(1200px 400px at 80% -40%, #34487a 0%, transparent 60%), linear-gradient(135deg, var(--navy) 0%, var(--navy2) 100%);
       color: #fff;
-      padding: 24px 20px;
+      padding: 48px 20px 56px;
+      overflow: hidden;
+      border-bottom: 1px solid rgba(176, 141, 79, .5);
     }
-    header .wrap { max-width: 1080px; margin: 0 auto; }
-    header h1 { margin: 0 0 4px; font-size: 22px; }
-    header p { margin: 0; opacity: .9; font-size: 14px; }
-    .container { max-width: 1080px; margin: 0 auto; padding: 20px; }
+    header::after {
+      content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 3px;
+      background: linear-gradient(90deg, transparent, var(--gold-2), transparent);
+    }
+    header .wrap { max-width: 1120px; margin: 0 auto; }
+    .eyebrow {
+      font-size: 12px; letter-spacing: .28em; text-transform: uppercase;
+      color: var(--gold-2); font-weight: 700; margin: 0 0 10px;
+    }
+    header h1 {
+      font-family: "Playfair Display", Georgia, serif;
+      font-weight: 600; font-size: clamp(28px, 5vw, 42px); margin: 0 0 10px; letter-spacing: .3px;
+    }
+    header p { margin: 0; max-width: 620px; color: #c7cee0; font-size: 15px; }
+
+    /* ---------- layout ---------- */
+    .container { max-width: 1120px; margin: -28px auto 0; padding: 0 20px 48px; position: relative; }
     .card {
       background: var(--card);
       border-radius: var(--radius);
       box-shadow: var(--shadow);
-      padding: 20px;
-      margin-bottom: 20px;
       border: 1px solid var(--line);
+      padding: 28px;
+      margin-bottom: 24px;
     }
-    .step-badge {
-      display: inline-flex; align-items: center; gap: 8px;
-      font-size: 13px; font-weight: 700; color: var(--brand-dark);
-      background: #ddebf7; padding: 4px 12px; border-radius: 999px;
-      margin-bottom: 6px;
+    .card-head { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 22px; }
+    .step-num {
+      flex: none; width: 42px; height: 42px; border-radius: 50%;
+      display: grid; place-items: center; font-weight: 800; font-size: 17px;
+      color: var(--navy); background: linear-gradient(145deg, var(--gold-2), var(--gold));
+      box-shadow: 0 6px 14px -4px rgba(176, 141, 79, .6);
     }
-    .card h2 { margin: 6px 0 2px; font-size: 18px; }
-    .card .desc { color: var(--muted); font-size: 13px; margin: 0 0 16px; }
-    .grid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
-    .field label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 5px; }
-    .field .hint { font-size: 11px; color: var(--muted); font-weight: 400; }
+    .card-head .eb { font-size: 11px; letter-spacing: .22em; text-transform: uppercase; color: var(--gold); font-weight: 700; }
+    .card-head h2 { font-family: "Playfair Display", Georgia, serif; font-weight: 600; font-size: 23px; margin: 2px 0 3px; }
+    .card-head .desc { color: var(--muted); font-size: 13.5px; margin: 0; max-width: 720px; }
+
+    .subhead {
+      font-size: 12px; letter-spacing: .14em; text-transform: uppercase;
+      color: var(--navy2); font-weight: 700; margin: 22px 0 14px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .subhead::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+    .subhead svg { width: 16px; height: 16px; color: var(--gold); }
+
+    .grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); }
+    .field label { display: block; font-size: 12px; font-weight: 600; letter-spacing: .02em; margin-bottom: 7px; color: #3b455f; }
+    .field .hint { font-size: 11px; color: var(--muted); font-weight: 500; }
     .field input, .field select {
-      width: 100%; padding: 10px 12px; border: 1px solid var(--line);
-      border-radius: 9px; font-size: 15px; background: #fbfcfe; color: var(--ink);
+      width: 100%; padding: 12px 14px; border: 1px solid var(--line); border-radius: 11px;
+      font-size: 15px; font-family: inherit; background: #fafbfd; color: var(--ink);
+      transition: border-color .15s, box-shadow .15s, background .15s;
     }
-    .field input:focus { outline: 2px solid var(--brand); background: #fff; }
+    .field input:hover { border-color: #d4d8e4; }
+    .field input:focus {
+      outline: none; border-color: var(--gold); background: #fff;
+      box-shadow: 0 0 0 4px rgba(176, 141, 79, .14);
+    }
+
     .inline-out {
       display: flex; justify-content: space-between; align-items: baseline;
-      padding: 8px 0; border-bottom: 1px dashed var(--line); font-size: 14px;
+      padding: 11px 2px; border-bottom: 1px dashed var(--line); font-size: 14px; color: #4b5670;
     }
-    .inline-out span:last-child { font-weight: 700; font-variant-numeric: tabular-nums; }
-    .result-box {
-      margin-top: 16px; background: var(--accent); border: 1px solid #bfe0bf;
-      border-radius: 12px; padding: 14px 18px;
-      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;
-    }
-    .result-box .label { font-weight: 600; color: var(--accent-ink); }
-    .result-box .value { font-size: 24px; font-weight: 800; color: var(--accent-ink); font-variant-numeric: tabular-nums; }
+    .inline-out span:last-child { font-weight: 700; color: var(--ink); }
 
-    table { width: 100%; border-collapse: collapse; font-size: 13px; }
-    .table-scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; }
-    th, td { padding: 8px; text-align: right; border-bottom: 1px solid var(--line); white-space: nowrap; }
-    th { background: var(--brand); color: #fff; font-weight: 600; position: sticky; top: 0; }
-    th:first-child, td:first-child { text-align: center; }
-    td input { width: 100%; min-width: 80px; padding: 7px 8px; border: 1px solid var(--line); border-radius: 7px; text-align: right; font-size: 13px; }
+    /* hero result */
+    .result-hero {
+      margin-top: 18px;
+      background: radial-gradient(700px 200px at 100% 0%, rgba(202,168,105,.25), transparent 55%), linear-gradient(135deg, var(--navy), var(--navy2));
+      border-radius: 16px; padding: 22px 26px; color: #fff;
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
+      box-shadow: 0 16px 34px -18px rgba(21,32,60,.7);
+    }
+    .result-hero .label { font-size: 12.5px; letter-spacing: .12em; text-transform: uppercase; color: #cdd4e6; font-weight: 600; }
+    .result-hero .label small { display: block; text-transform: none; letter-spacing: 0; color: #97a0bd; font-size: 11.5px; margin-top: 3px; }
+    .result-hero .value { font-family: "Playfair Display", serif; font-size: 32px; font-weight: 700; color: var(--gold-2); }
+    .note { font-size: 12px; color: var(--muted); margin-top: 12px; }
+    .note b { color: var(--gold); }
+
+    /* table */
+    .table-scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow-sm); }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 920px; }
+    th, td { padding: 11px 10px; text-align: right; border-bottom: 1px solid var(--line); white-space: nowrap; }
+    thead th {
+      background: linear-gradient(180deg, var(--navy2), var(--navy)); color: #eef1f8;
+      font-weight: 600; font-size: 11.5px; letter-spacing: .02em; position: sticky; top: 0;
+      border-bottom: none; line-height: 1.25;
+    }
+    thead th:first-child { border-top-left-radius: 0; }
+    th:first-child, td:first-child { text-align: center; color: var(--muted); }
+    tbody tr:nth-child(even) { background: #fafbfd; }
+    tbody tr:hover { background: var(--gold-soft); }
+    td input {
+      width: 100%; min-width: 78px; padding: 8px 9px; border: 1px solid var(--line);
+      border-radius: 8px; text-align: right; font-size: 13px; font-family: inherit; background: #fff;
+      transition: border-color .15s, box-shadow .15s;
+    }
+    td input:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 3px rgba(176,141,79,.13); }
     td.text input { text-align: left; }
-    td.calc { font-weight: 700; font-variant-numeric: tabular-nums; background: #f3faf3; }
-    .row-del { background: none; border: none; color: var(--danger); cursor: pointer; font-size: 16px; line-height: 1; }
-    tfoot td { background: #eef3fb; font-weight: 800; font-variant-numeric: tabular-nums; }
-
-    .btn {
-      border: none; border-radius: 9px; padding: 10px 16px; font-size: 14px; font-weight: 600;
-      cursor: pointer; transition: .15s;
+    td.calc { font-weight: 700; color: var(--ink); background: rgba(176,141,79,.06); }
+    td.calc.profit { color: var(--emerald); }
+    .row-del {
+      background: none; border: none; color: #c6ccd9; cursor: pointer; font-size: 20px; line-height: 1;
+      transition: color .15s; padding: 0 4px;
     }
-    .btn-primary { background: var(--brand); color: #fff; }
-    .btn-primary:hover { background: var(--brand-dark); }
-    .btn-ghost { background: #eef1f7; color: var(--ink); }
-    .btn-ghost:hover { background: #e2e7f0; }
-    .toolbar { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+    .row-del:hover { color: var(--danger); }
+    tfoot td { background: #f1f3f9; font-weight: 800; border-bottom: none; }
+    tfoot td:first-child { border-bottom-left-radius: 14px; }
 
-    .summary-grid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
-    .stat { background: #fbfcfe; border: 1px solid var(--line); border-radius: 12px; padding: 14px; }
-    .stat .k { font-size: 12px; color: var(--muted); margin-bottom: 4px; }
-    .stat .v { font-size: 20px; font-weight: 800; font-variant-numeric: tabular-nums; }
-    .stat.profit .v { color: var(--accent-ink); }
-    footer { text-align: center; color: var(--muted); font-size: 12px; padding: 24px; }
-    .note { font-size: 12px; color: var(--muted); margin-top: 10px; }
-    @media (max-width: 600px) { header h1 { font-size: 18px; } .result-box .value { font-size: 20px; } }
+    /* buttons */
+    .toolbar { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 18px; }
+    .btn {
+      border: 1px solid transparent; border-radius: 11px; padding: 11px 20px;
+      font-size: 14px; font-weight: 600; font-family: inherit; cursor: pointer;
+      transition: transform .12s, box-shadow .15s, background .15s, border-color .15s;
+      display: inline-flex; align-items: center; gap: 8px;
+    }
+    .btn:active { transform: translateY(1px); }
+    .btn svg { width: 16px; height: 16px; }
+    .btn-primary { background: var(--navy); color: #fff; box-shadow: 0 10px 20px -10px rgba(21,32,60,.7); }
+    .btn-primary:hover { background: #1d2b4e; }
+    .btn-gold { background: linear-gradient(145deg, var(--gold-2), var(--gold)); color: var(--navy); }
+    .btn-gold:hover { filter: brightness(1.04); }
+    .btn-ghost { background: #fff; color: #4b5670; border-color: var(--line); }
+    .btn-ghost:hover { border-color: #cfd4e1; background: #fafbfd; }
+
+    /* summary */
+    .summary-grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+    .stat {
+      position: relative; background: #fafbfd; border: 1px solid var(--line);
+      border-radius: 14px; padding: 18px 18px 16px; overflow: hidden;
+    }
+    .stat .ico {
+      position: absolute; top: 16px; right: 16px; width: 30px; height: 30px; opacity: .9;
+      display: grid; place-items: center; border-radius: 9px; color: var(--navy2); background: #eef1f8;
+    }
+    .stat .ico svg { width: 17px; height: 17px; }
+    .stat .k { font-size: 12px; color: var(--muted); margin-bottom: 6px; font-weight: 600; letter-spacing: .02em; }
+    .stat .v { font-size: 22px; font-weight: 800; }
+    .stat.profit { background: var(--emerald-soft); border-color: #c7e6db; }
+    .stat.profit .v { color: var(--emerald); }
+    .stat.profit .ico { background: #d3ece3; color: var(--emerald); }
+
+    footer { text-align: center; color: var(--muted); font-size: 12px; padding: 8px 20px 40px; }
+    footer .dot { color: var(--gold); }
+    @media (max-width: 600px) {
+      header { padding: 36px 18px 48px; }
+      .card { padding: 20px; }
+      .result-hero .value { font-size: 26px; }
+    }
   </style>
 </head>
 <body>
   <header>
     <div class="wrap">
+      <p class="eyebrow">Konveksi &amp; Sablon</p>
       <h1>Kalkulator HPP Kaos</h1>
-      <p>Hitung HPP dari Kain &amp; RIB dulu, lalu tambahkan ongkos sablon, jahit, transport &amp; beban lainnya.</p>
+      <p>Hitung harga pokok produksi secara bertahap — mulai dari bahan Kain &amp; RIB, lalu lengkapi dengan ongkos sablon, jahit, transport, dan beban lainnya.</p>
     </div>
   </header>
 
   <div class="container">
 
-    <!-- TAHAP 1 : HPP BAHAN (KAIN + RIB) -->
+    <!-- TAHAP 1 -->
     <section class="card">
-      <span class="step-badge">TAHAP 1</span>
-      <h2>HPP Bahan — Kain &amp; RIB</h2>
-      <p class="desc">Isi harga bahan per Kg dan kebutuhan per kaos (gram). Sistem menghitung biaya bahan per satu kaos.</p>
+      <div class="card-head">
+        <div class="step-num">1</div>
+        <div>
+          <div class="eb">Tahap Satu</div>
+          <h2>HPP Bahan — Kain &amp; RIB</h2>
+          <p class="desc">Isi harga bahan per Kg dan kebutuhan per kaos (gram). Sistem menghitung biaya bahan untuk satu kaos.</p>
+        </div>
+      </div>
 
-      <h3 style="font-size:15px;margin:8px 0 10px;color:var(--brand-dark);">Kain Body</h3>
+      <div class="subhead">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7l9-4 9 4-9 4-9-4zM3 7v10l9 4 9-4V7"/></svg>
+        Kain Body
+      </div>
       <div class="grid">
         <div class="field">
           <label>Harga Kain <span class="hint">(Rp / Kg)</span></label>
@@ -133,7 +236,10 @@
         </div>
       </div>
 
-      <h3 style="font-size:15px;margin:18px 0 10px;color:var(--brand-dark);">RIB (Kerah / Manset)</h3>
+      <div class="subhead">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M6 7l1.5 12h9L18 7M9 7V5a3 3 0 0 1 6 0v2"/></svg>
+        RIB — Kerah / Manset
+      </div>
       <div class="grid">
         <div class="field">
           <label>Harga RIB <span class="hint">(Rp / Kg)</span></label>
@@ -145,25 +251,30 @@
         </div>
       </div>
 
-      <div style="margin-top:16px;">
-        <div class="inline-out"><span>Biaya Kain / kaos</span><span id="outBiayaKain">Rp0</span></div>
-        <div class="inline-out"><span>Biaya RIB / kaos</span><span id="outBiayaRib">Rp0</span></div>
+      <div style="margin-top:18px;">
+        <div class="inline-out"><span>Biaya Kain / kaos</span><span class="num" id="outBiayaKain">Rp0</span></div>
+        <div class="inline-out"><span>Biaya RIB / kaos</span><span class="num" id="outBiayaRib">Rp0</span></div>
       </div>
 
-      <div class="result-box">
-        <span class="label">HPP BAHAN per kaos (Kain + RIB)</span>
-        <span class="value" id="outHppBahan">Rp0</span>
+      <div class="result-hero">
+        <span class="label">HPP Bahan per kaos<small>Kain + RIB</small></span>
+        <span class="value num" id="outHppBahan">Rp0</span>
       </div>
-      <p class="note">Nilai ini menjadi dasar (biaya bahan) untuk setiap kaos di Tahap 2.</p>
+      <p class="note">Nilai ini menjadi <b>dasar biaya bahan</b> untuk setiap kaos pada Tahap 2.</p>
     </section>
 
-    <!-- TAHAP 2 : BEBAN PRODUKSI LAIN -->
+    <!-- TAHAP 2 -->
     <section class="card">
-      <span class="step-badge">TAHAP 2</span>
-      <h2>Tambah Beban Produksi (per Design)</h2>
-      <p class="desc">Satu warna kain bisa jadi beberapa design. Tambahkan baris design beserta ongkos sablon, jahit, dan biaya lainnya. HPP akhir = HPP Bahan + beban-beban ini.</p>
+      <div class="card-head">
+        <div class="step-num">2</div>
+        <div>
+          <div class="eb">Tahap Dua</div>
+          <h2>Tambah Beban Produksi</h2>
+          <p class="desc">Satu warna kain bisa menjadi beberapa design. Tambahkan baris design beserta ongkos sablon, jahit, dan biaya lain. HPP akhir = HPP Bahan + beban-beban ini.</p>
+        </div>
+      </div>
 
-      <div class="grid" style="margin-bottom:16px;">
+      <div class="grid" style="margin-bottom:18px; max-width:320px;">
         <div class="field">
           <label>Margin Keuntungan <span class="hint">(%)</span></label>
           <input type="number" id="margin" min="0" step="1" value="40" />
@@ -193,12 +304,12 @@
           <tbody id="designRows"></tbody>
           <tfoot>
             <tr>
-              <td colspan="2">TOTAL</td>
-              <td id="sumQty">0</td>
+              <td colspan="2" style="text-align:left;">TOTAL</td>
+              <td class="num" id="sumQty">0</td>
               <td colspan="7"></td>
-              <td id="sumModal">Rp0</td>
-              <td id="sumJual">Rp0</td>
-              <td id="sumLaba">Rp0</td>
+              <td class="num" id="sumModal">Rp0</td>
+              <td class="num" id="sumJual">Rp0</td>
+              <td class="num" id="sumLaba">Rp0</td>
               <td></td>
             </tr>
           </tfoot>
@@ -206,26 +317,53 @@
       </div>
 
       <div class="toolbar">
-        <button class="btn btn-primary" id="btnAdd">+ Tambah Design</button>
-        <button class="btn btn-ghost" id="btnSample">Isi Contoh</button>
-        <button class="btn btn-ghost" id="btnReset">Reset Semua</button>
+        <button class="btn btn-gold" id="btnAdd">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14M5 12h14"/></svg>
+          Tambah Design
+        </button>
+        <button class="btn btn-ghost" id="btnSample">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/></svg>
+          Isi Contoh
+        </button>
+        <button class="btn btn-ghost" id="btnReset">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 3-6.7M3 4v4h4"/></svg>
+          Reset Semua
+        </button>
       </div>
     </section>
 
     <!-- RINGKASAN -->
     <section class="card">
-      <h2>Ringkasan</h2>
-      <div class="summary-grid" style="margin-top:12px;">
-        <div class="stat"><div class="k">Total Produksi</div><div class="v" id="statQty">0 pcs</div></div>
-        <div class="stat"><div class="k">Total Modal (HPP)</div><div class="v" id="statModal">Rp0</div></div>
-        <div class="stat"><div class="k">Total Penjualan</div><div class="v" id="statJual">Rp0</div></div>
-        <div class="stat profit"><div class="k">Total Laba</div><div class="v" id="statLaba">Rp0</div></div>
+      <div class="card-head" style="margin-bottom:8px;">
+        <div class="step-num" style="background:linear-gradient(145deg,#3a4b78,#2a3a63);color:#fff;">&Sigma;</div>
+        <div>
+          <div class="eb">Rekap</div>
+          <h2>Ringkasan Produksi</h2>
+        </div>
+      </div>
+      <div class="summary-grid" style="margin-top:14px;">
+        <div class="stat">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7L12 3 4 7v10l8 4 8-4V7zM4 7l8 4 8-4M12 11v10"/></svg></div>
+          <div class="k">Total Produksi</div><div class="v num" id="statQty">0 pcs</div>
+        </div>
+        <div class="stat">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+          <div class="k">Total Modal (HPP)</div><div class="v num" id="statModal">Rp0</div>
+        </div>
+        <div class="stat">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18M7 14l4-4 3 3 5-6"/></svg></div>
+          <div class="k">Total Penjualan</div><div class="v num" id="statJual">Rp0</div>
+        </div>
+        <div class="stat profit">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17l6-6 4 4 8-8M21 7h-5M21 7v5"/></svg></div>
+          <div class="k">Total Laba</div><div class="v num" id="statLaba">Rp0</div>
+        </div>
       </div>
     </section>
 
   </div>
 
-  <footer>Data tersimpan otomatis di browser ini (localStorage). &middot; Kalkulator HPP Kaos</footer>
+  <footer>Data tersimpan otomatis di browser ini (localStorage) <span class="dot">&bull;</span> Kalkulator HPP Kaos</footer>
 
   <script>
   /* =========================================================================
@@ -279,7 +417,7 @@
         '<td class="calc o-jual">Rp0</td>' +
         '<td class="calc o-modal">Rp0</td>' +
         '<td class="calc o-totaljual">Rp0</td>' +
-        '<td class="calc o-laba">Rp0</td>' +
+        '<td class="calc profit o-laba">Rp0</td>' +
         '<td><button class="row-del" title="Hapus baris">&times;</button></td>';
 
       tr.querySelector(".f-nama").value = data.nama || "";
