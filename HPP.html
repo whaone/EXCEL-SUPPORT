@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Kalkulator HPP Kaos</title>
+<style>
+  :root{
+    --bg:#f4f6fb; --card:#fff; --ink:#1c2333; --muted:#6b7385; --line:#e6e9f0;
+    --primary:#4f46e5; --primary-dark:#4338ca; --accent:#0e9f6e; --highlight:#eef0ff;
+    --input-bg:#fcfcfe; --ghost:#eef0f6; --ghost-h:#e2e6f0;
+    --shadow:0 1px 3px rgba(20,25,50,.06),0 8px 24px rgba(20,25,50,.06);
+  }
+  [data-theme="dark"]{
+    --bg:#0f131c; --card:#181d29; --ink:#e8ebf2; --muted:#969db0; --line:#2a3140;
+    --primary:#7c83ff; --primary-dark:#6b73f5; --accent:#34d399; --highlight:#1d2236;
+    --input-bg:#11151f; --ghost:#232a39; --ghost-h:#2c3445;
+    --shadow:0 1px 3px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.35);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--ink);transition:background .25s,color .25s}
+  .topbar{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:16px 24px;background:var(--card);border-bottom:1px solid var(--line);flex-wrap:wrap}
+  .brand{display:flex;align-items:center;gap:12px}
+  .logo{width:44px;height:44px;display:grid;place-items:center;border-radius:12px;background:linear-gradient(135deg,var(--primary),#7c6df2);color:#fff;font-weight:800;font-size:13px}
+  .topbar h1{margin:0;font-size:19px}
+  .topbar p{margin:2px 0 0;font-size:12px;color:var(--muted)}
+  .actions{display:flex;gap:8px}
+  .layout{max-width:1000px;margin:24px auto;padding:0 20px;display:grid;grid-template-columns:1fr 340px;gap:20px;align-items:start}
+  .col-main{display:flex;flex-direction:column;gap:20px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;box-shadow:var(--shadow);transition:background .25s,border-color .25s}
+  .card h2{margin:0 0 14px;font-size:15px}
+  .row{display:grid;grid-template-columns:1fr 150px;gap:12px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line)}
+  .row:last-child{border-bottom:none}
+  .row label{font-size:14px}
+  .row label small{display:block;color:var(--muted);font-size:12px;margin-top:2px}
+  .row .out{font-size:12px;color:var(--accent);font-weight:600;margin-top:3px}
+  input[type=text]{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:9px;font-size:14px;font-family:inherit;color:var(--ink);background:var(--input-bg);text-align:right}
+  input:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(79,70,229,.15)}
+  input[type=range]{width:100%;accent-color:var(--primary)}
+  .btn{border:none;border-radius:9px;padding:9px 15px;font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;transition:background .15s}
+  .btn-ghost{background:var(--ghost);color:var(--ink)}
+  .btn-ghost:hover{background:var(--ghost-h)}
+  .side{position:sticky;top:20px;display:flex;flex-direction:column;gap:8px}
+  .sum-row{display:flex;justify-content:space-between;gap:12px;padding:6px 0;font-size:13.5px;color:var(--muted)}
+  .sum-row strong{color:var(--ink);font-weight:600}
+  .sum-row.total strong{font-size:15px}
+  .sum-row.big strong{font-size:20px}
+  .sum-row.hl{background:var(--highlight);margin:4px -12px;padding:12px;border-radius:10px}
+  .sum-row.hl strong{color:var(--primary-dark)}
+  .sum-row.acc strong{color:var(--accent)}
+  .divider{height:1px;background:var(--line);margin:8px 0}
+  .note{font-size:12px;color:var(--muted);text-align:center;margin:4px 0 0}
+  @media(max-width:880px){.layout{grid-template-columns:1fr}.side{position:static}}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <div class="logo">HPP</div>
+    <div>
+      <h1>Kalkulator HPP Kaos</h1>
+      <p>Hitung biaya per kaos: kain, rib, jahit, sablon, ongkir, transport</p>
+    </div>
+  </div>
+  <div class="actions">
+    <button id="btnTheme" class="btn btn-ghost" type="button">Mode Malam</button>
+    <button id="btnReset" class="btn btn-ghost" type="button">Reset</button>
+  </div>
+</header>
+
+<main class="layout">
+  <section class="col-main">
+    <div class="card">
+      <h2>Informasi Produksi</h2>
+      <div class="row">
+        <label>Jumlah Kaos Diproduksi <small>dipakai untuk membagi ongkir</small></label>
+        <input type="text" inputmode="decimal" id="qty" value="100" />
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Bahan (per kaos)</h2>
+      <div class="row">
+        <label>Harga Kain (Rp / kg)<small>harga beli kain per kilogram</small></label>
+        <input type="text" inputmode="decimal" id="hargaKain" value="90.000" />
+      </div>
+      <div class="row">
+        <label>Pemakaian Kain (kg / kaos)<div class="out" id="outKain">Rp 0 / kaos</div></label>
+        <input type="text" inputmode="decimal" id="beratKain" value="0,25" />
+      </div>
+      <div class="row">
+        <label>Harga Rib (Rp / kg)<small>harga beli rib per kilogram</small></label>
+        <input type="text" inputmode="decimal" id="hargaRib" value="95.000" />
+      </div>
+      <div class="row">
+        <label>Pemakaian Rib (kg / kaos)<div class="out" id="outRib">Rp 0 / kaos</div></label>
+        <input type="text" inputmode="decimal" id="beratRib" value="0,04" />
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Ongkos dan Beban</h2>
+      <div class="row">
+        <label>Ongkos Jahit (Rp / kaos)</label>
+        <input type="text" inputmode="decimal" id="ongkosJahit" value="7.000" />
+      </div>
+      <div class="row">
+        <label>Ongkos Sablon (Rp / kaos)</label>
+        <input type="text" inputmode="decimal" id="ongkosSablon" value="5.000" />
+      </div>
+      <div class="row">
+        <label>Ongkir Total (Rp)<div class="out" id="outOngkir">Rp 0 / kaos</div></label>
+        <input type="text" inputmode="decimal" id="ongkir" value="50.000" />
+      </div>
+      <div class="row">
+        <label>Beban Transport (Rp / kaos)</label>
+        <input type="text" inputmode="decimal" id="transport" value="1.000" />
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Margin Keuntungan</h2>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <span style="font-size:14px">Margin: <strong id="marginLabel">40%</strong></span>
+        <input type="range" id="margin" min="0" max="200" step="5" value="40" />
+      </div>
+    </div>
+  </section>
+
+  <aside class="side">
+    <div class="card">
+      <h2 style="font-size:17px">Rincian per Kaos</h2>
+      <div class="sum-row"><span>Kain</span><strong id="rKain">Rp 0</strong></div>
+      <div class="sum-row"><span>Rib</span><strong id="rRib">Rp 0</strong></div>
+      <div class="sum-row"><span>Ongkos jahit</span><strong id="rJahit">Rp 0</strong></div>
+      <div class="sum-row"><span>Ongkos sablon</span><strong id="rSablon">Rp 0</strong></div>
+      <div class="sum-row"><span>Ongkir / kaos</span><strong id="rOngkir">Rp 0</strong></div>
+      <div class="sum-row"><span>Beban transport</span><strong id="rTransport">Rp 0</strong></div>
+      <div class="divider"></div>
+      <div class="sum-row big hl"><span>HPP per Kaos</span><strong id="rHpp">Rp 0</strong></div>
+      <div class="divider"></div>
+      <div class="sum-row"><span>Margin</span><strong id="rMargin">40%</strong></div>
+      <div class="sum-row big acc"><span>Harga Jual / Kaos</span><strong id="rPrice">Rp 0</strong></div>
+      <div class="sum-row"><span>Laba per Kaos</span><strong id="rProfit">Rp 0</strong></div>
+      <div class="divider"></div>
+      <div class="sum-row total"><span>Total HPP (semua kaos)</span><strong id="rHppTotal">Rp 0</strong></div>
+      <div class="sum-row"><span>Total Laba</span><strong id="rProfitTotal">Rp 0</strong></div>
+    </div>
+    <p class="note">Data tersimpan otomatis di browser ini.</p>
+  </aside>
+</main>
+
+<script>
+  var THEME_KEY = "hpp-kaos-theme";
+  var STORAGE_KEY = "hpp-kaos-form-v1";
+
+  var FIELDS = {
+    qty: "100",
+    hargaKain: "90.000", beratKain: "0,25",
+    hargaRib: "95.000", beratRib: "0,04",
+    ongkosJahit: "7.000", ongkosSablon: "5.000",
+    ongkir: "50.000", transport: "1.000",
+    margin: "40"
+  };
+
+  function $(id){ return document.getElementById(id); }
+
+  // Baca angka: koma = desimal (0,04), titik = ribuan (1.250.000)
+  function num(v){
+    var s = String(v).trim();
+    if (s === "") return 0;
+    var hasComma = s.indexOf(",") > -1;
+    var dotCount = (s.match(/\./g) || []).length;
+    if (hasComma){
+      s = s.replace(/\./g, "").replace(",", ".");
+    } else if (dotCount > 1){
+      s = s.replace(/\./g, "");
+    }
+    s = s.replace(/[^0-9.\-]/g, "");
+    var n = parseFloat(s);
+    return isNaN(n) ? 0 : n;
+  }
+  function rupiah(n){ return "Rp " + Math.round(num(n)).toLocaleString("id-ID"); }
+
+  function getInitialTheme(){
+    var saved = localStorage.getItem(THEME_KEY);
+    if (saved === "dark" || saved === "light") return saved;
+    return (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) ? "dark" : "light";
+  }
+  function applyTheme(theme){
+    document.documentElement.setAttribute("data-theme", theme);
+    $("btnTheme").textContent = (theme === "dark") ? "Mode Siang" : "Mode Malam";
+    try { localStorage.setItem(THEME_KEY, theme); } catch(e){}
+  }
+  function toggleTheme(){
+    var cur = document.documentElement.getAttribute("data-theme");
+    applyTheme(cur === "dark" ? "light" : "dark");
+  }
+
+  function saveState(){
+    var data = {};
+    for (var id in FIELDS){ data[id] = $(id).value; }
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch(e){}
+  }
+  function loadState(){
+    var data = null;
+    try { var raw = localStorage.getItem(STORAGE_KEY); if (raw) data = JSON.parse(raw); } catch(e){}
+    for (var id in FIELDS){
+      var v = (data && data[id] !== undefined) ? data[id] : FIELDS[id];
+      $(id).value = v;
+    }
+  }
+
+  function calculate(){
+    var qty = Math.max(1, num($("qty").value));
+    var kain = num($("hargaKain").value) * num($("beratKain").value);
+    var rib  = num($("hargaRib").value)  * num($("beratRib").value);
+    var jahit = num($("ongkosJahit").value);
+    var sablon = num($("ongkosSablon").value);
+    var ongkirPer = num($("ongkir").value) / qty;
+    var transport = num($("transport").value);
+
+    var hpp = kain + rib + jahit + sablon + ongkirPer + transport;
+    var margin = num($("margin").value);
+    var price = hpp * (1 + margin / 100);
+    var profit = price - hpp;
+
+    $("outKain").textContent = rupiah(kain) + " / kaos";
+    $("outRib").textContent = rupiah(rib) + " / kaos";
+    $("outOngkir").textContent = rupiah(ongkirPer) + " / kaos";
+
+    $("rKain").textContent = rupiah(kain);
+    $("rRib").textContent = rupiah(rib);
+    $("rJahit").textContent = rupiah(jahit);
+    $("rSablon").textContent = rupiah(sablon);
+    $("rOngkir").textContent = rupiah(ongkirPer);
+    $("rTransport").textContent = rupiah(transport);
+    $("rHpp").textContent = rupiah(hpp);
+    $("rMargin").textContent = margin + "%";
+    $("rPrice").textContent = rupiah(price);
+    $("rProfit").textContent = rupiah(profit);
+    $("rHppTotal").textContent = rupiah(hpp * qty);
+    $("rProfitTotal").textContent = rupiah(profit * qty);
+
+    $("marginLabel").textContent = margin + "%";
+  }
+
+  function init(){
+    loadState();
+    calculate();
+
+    for (var id in FIELDS){
+      $(id).addEventListener("input", function(){ calculate(); saveState(); });
+    }
+
+    $("btnReset").addEventListener("click", function(){
+      if (confirm("Reset semua data ke contoh awal?")){
+        try { localStorage.removeItem(STORAGE_KEY); } catch(e){}
+        for (var id in FIELDS){ $(id).value = FIELDS[id]; }
+        calculate();
+      }
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", function(){
+    applyTheme(getInitialTheme());
+    $("btnTheme").addEventListener("click", toggleTheme);
+    init();
+  });
+</script>
+</body>
+</html>
