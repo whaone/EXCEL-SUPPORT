@@ -73,7 +73,7 @@
     .note b { color: var(--gold); }
 
     .table-scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow-sm); }
-    table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 1040px; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 1120px; }
     table.compact { min-width: 780px; }
     th, td { padding: 11px 10px; text-align: right; border-bottom: 1px solid var(--line); white-space: nowrap; }
     thead th { background: linear-gradient(180deg, var(--navy2), var(--navy)); color: #eef1f8; font-weight: 600; font-size: 11.5px; letter-spacing: .02em; position: sticky; top: 0; border-bottom: none; line-height: 1.25; }
@@ -183,7 +183,7 @@
           <table class="compact">
             <thead>
               <tr>
-                <th>#</th><th>Kategori</th><th>Ukuran</th><th>Jml<br>Pesanan</th><th>Kelebihan<br>(pcs)</th><th>Total<br>pcs</th><th></th>
+                <th>#</th><th>Kategori</th><th>Ukuran</th><th>Jml<br>Pesanan</th><th>Kelebihan<br>(pcs)</th><th>Bobot<br>Kain</th><th>Total<br>pcs</th><th>HPP Bahan<br>/pcs</th><th></th>
               </tr>
             </thead>
             <tbody id="prodRows"></tbody>
@@ -192,8 +192,9 @@
                 <td colspan="3" style="text-align:left;">TOTAL</td>
                 <td class="num" id="pSumPesan">0</td>
                 <td class="num" id="pSumLebih">0</td>
-                <td class="num" id="pSumPcs">0</td>
                 <td></td>
+                <td class="num" id="pSumPcs">0</td>
+                <td colspan="2"></td>
               </tr>
             </tfoot>
           </table>
@@ -211,7 +212,7 @@
             <div class="bi"><div class="k">Total Biaya Bahan</div><div class="v num" id="prodBiayaTotal">Rp0</div></div>
           </div>
         </div>
-        <p class="note">Rumus: <b>(Harga Kain/Kg &times; Kg dibeli + Harga RIB/Kg &times; Kg dibeli) &divide; Total pcs jadi</b> &mdash; sesuai perhitungan manualmu. Total pcs sudah termasuk <b>kelebihan produksi</b>. <i>(Kebutuhan kain/RIB per ukuran untuk presisi bisa dipakai nanti di mode Analisa.)</i></p>
+        <p class="note">Biaya bahan dialokasikan dengan <b>metode perbandingan (bobot)</b>: tiap pcs menyerap biaya sebanding <b>Bobot Kain</b>-nya. Default <b>Dewasa = 1</b>, <b>Anak = 0,6</b> (kaos anak ~60% pemakaian kain dewasa) &mdash; silakan sesuaikan. Total pcs termasuk <b>kelebihan produksi</b>. <i>(Detail gram per ukuran bisa dipakai nanti di mode Analisa.)</i></p>
       </div>
 
       <!-- ====================== FORM: ANALISA KEBUTUHAN ====================== -->
@@ -253,10 +254,17 @@
         <div class="inline-out"><span>Biaya RIB / kaos <small style="color:var(--muted)">(rata2, termasuk susut)</small></span><span class="num" id="outBiayaRib">Rp0</span></div>
       </div>
       <div class="result-hero">
-        <span class="label">HPP Bahan per kaos<small>Kain + RIB (rata-rata tertimbang, termasuk susut)</small></span>
+        <span class="label">HPP Bahan per kaos<small>Kain + RIB (rata-rata keseluruhan, termasuk susut)</small></span>
         <span class="value num" id="outHppBahan">Rp0</span>
       </div>
-      <p class="note">Nilai ini menjadi <b>dasar biaya bahan</b> untuk setiap kaos pada Tahap 2.</p>
+      <div id="hppKatBox" class="buy-box">
+        <div class="bt">HPP Bahan per Kategori (metode perbandingan)</div>
+        <div class="buy-grid">
+          <div class="bi"><div class="k">HPP Bahan Dewasa /pcs</div><div class="v num" id="hppKatDewasa">Rp0</div></div>
+          <div class="bi"><div class="k">HPP Bahan Anak /pcs</div><div class="v num" id="hppKatAnak">Rp0</div></div>
+        </div>
+      </div>
+      <p class="note">Nilai per kategori inilah yang dipakai di Tahap 2 (pilih kategori tiap design). Total tetap sama dengan biaya bahan sebenarnya &mdash; hanya dibagi lebih adil antara dewasa &amp; anak.</p>
     </section>
 
     <!-- TAHAP 2 -->
@@ -278,7 +286,7 @@
         <table>
           <thead>
             <tr>
-              <th>#</th><th>Design</th><th>Jumlah<br>(pcs)</th><th>Ongkos<br>Jahit /pcs</th>
+              <th>#</th><th>Design</th><th>Kategori</th><th>Jumlah<br>(pcs)</th><th>Ongkos<br>Jahit /pcs</th>
               <th>Ongkos<br>Sablon /pcs</th><th>Biaya Lain<br>/pcs</th><th>Transport<br>(batch)</th>
               <th>HPP Bahan<br>/pcs</th><th>HPP Akhir<br>/pcs</th><th>Harga Saran<br>/pcs</th>
               <th>Harga Aktual<br>/pcs</th><th>Total Modal</th><th>Total Jual</th><th>Laba</th><th></th>
@@ -287,7 +295,7 @@
           <tbody id="designRows"></tbody>
           <tfoot>
             <tr>
-              <td colspan="2" style="text-align:left;">TOTAL</td>
+              <td colspan="3" style="text-align:left;">TOTAL</td>
               <td class="num" id="sumQty">0</td>
               <td colspan="8"></td>
               <td class="num" id="sumModal">Rp0</td>
@@ -351,7 +359,7 @@
      ========================================================================= */
   (function () {
     "use strict";
-    var STORAGE_KEY = "hpp-kaos-v4";
+    var STORAGE_KEY = "hpp-kaos-v5";
     var mode = "produksi";
 
     function $(id) { return document.getElementById(id); }
@@ -366,6 +374,14 @@
     var prodBody = $("prodRows");
     var tbody = $("designRows");
 
+    var hppKat = { Dewasa: 0, Anak: 0 };
+    var hppOverall = 0;
+    function defBobot(kat) { return kat === "Anak" ? 0.6 : 1; }
+    function getBobot(tr) {
+      var v = parseFloat(tr.querySelector(".p-bobot").value);
+      return (isFinite(v) && v > 0) ? v : defBobot(tr.querySelector(".p-kategori").value);
+    }
+
     /* ---------- baris RINCIAN PRODUKSI ---------- */
     function createProdRow(data) {
       data = data || {};
@@ -376,13 +392,16 @@
         '<td class="text"><input type="text"   class="p-ukuran" placeholder="M / L / 4-5th"></td>' +
         '<td><input type="number" class="p-pesan" min="0" step="1"  placeholder="0"></td>' +
         '<td><input type="number" class="p-lebih" min="0" step="1"  placeholder="0"></td>' +
+        '<td><input type="number" class="p-bobot" min="0" step="0.05" placeholder="auto"></td>' +
         '<td class="calc p-pcs">0</td>' +
+        '<td class="calc p-hpp">Rp0</td>' +
         '<td><button class="row-del" title="Hapus baris">&times;</button></td>';
 
       tr.querySelector(".p-kategori").value = data.kategori || "Dewasa";
       tr.querySelector(".p-ukuran").value = data.ukuran || "";
       tr.querySelector(".p-pesan").value = data.pesan || "";
       tr.querySelector(".p-lebih").value = data.lebih || "";
+      tr.querySelector(".p-bobot").value = (data.bobot !== undefined && data.bobot !== "") ? data.bobot : "";
 
       tr.addEventListener("input", recalcAll);
       tr.addEventListener("change", recalcAll);
@@ -402,29 +421,51 @@
         var hKain = toNum($("hargaKainP").value), kgKain = toNum($("kainBeliP").value);
         var hRib = toNum($("hargaRibP").value), kgRib = toNum($("ribBeliP").value);
         var sumPcs = 0, sumPesan = 0, sumLebih = 0;
+        var rowsData = [];
 
         prodBody.querySelectorAll("tr").forEach(function (tr, i) {
           tr.querySelector(".pnum").textContent = i + 1;
+          var kat = tr.querySelector(".p-kategori").value;
           var pesan = toNum(tr.querySelector(".p-pesan").value);
           var lebih = toNum(tr.querySelector(".p-lebih").value);
           var pcs = pesan + lebih;
-          tr.querySelector(".p-pcs").textContent = formatPcs(pcs);
+          var bobot = getBobot(tr);
+          rowsData.push({ tr: tr, kat: kat, pcs: pcs, bobot: bobot });
           sumPcs += pcs; sumPesan += pesan; sumLebih += lebih;
         });
+
+        var totalBiayaKain = hKain * kgKain * susutFactor;
+        var totalBiayaRib = hRib * kgRib * susutFactor;
+        var totalMat = totalBiayaKain + totalBiayaRib;
+
+        var weighted = 0;
+        rowsData.forEach(function (r) { weighted += r.pcs * r.bobot; });
+        var costPerUnit = weighted > 0 ? totalMat / weighted : 0;
+
+        var pcsKat = {}, wKat = {};
+        rowsData.forEach(function (r) {
+          var hppPcs = costPerUnit * r.bobot;
+          r.tr.querySelector(".p-pcs").textContent = formatPcs(r.pcs);
+          r.tr.querySelector(".p-hpp").textContent = formatRp(hppPcs);
+          pcsKat[r.kat] = (pcsKat[r.kat] || 0) + r.pcs;
+          wKat[r.kat] = (wKat[r.kat] || 0) + r.pcs * r.bobot;
+        });
+
+        hppKat.Dewasa = pcsKat.Dewasa > 0 ? costPerUnit * (wKat.Dewasa / pcsKat.Dewasa) : 0;
+        hppKat.Anak = pcsKat.Anak > 0 ? costPerUnit * (wKat.Anak / pcsKat.Anak) : 0;
 
         $("pSumPesan").textContent = formatPcs(sumPesan);
         $("pSumLebih").textContent = formatPcs(sumLebih);
         $("pSumPcs").textContent = formatPcs(sumPcs);
-
-        var totalBiayaKain = hKain * kgKain;
-        var totalBiayaRib = hRib * kgRib;
         $("prodTotalPcs").textContent = formatPcs(sumPcs) + " pcs";
-        $("prodBiayaKain").textContent = formatRp(totalBiayaKain * susutFactor);
-        $("prodBiayaRib").textContent = formatRp(totalBiayaRib * susutFactor);
-        $("prodBiayaTotal").textContent = formatRp((totalBiayaKain + totalBiayaRib) * susutFactor);
+        $("prodBiayaKain").textContent = formatRp(totalBiayaKain);
+        $("prodBiayaRib").textContent = formatRp(totalBiayaRib);
+        $("prodBiayaTotal").textContent = formatRp(totalMat);
+        $("hppKatDewasa").textContent = formatRp(hppKat.Dewasa);
+        $("hppKatAnak").textContent = formatRp(hppKat.Anak);
 
-        biayaKainPer = sumPcs > 0 ? (totalBiayaKain * susutFactor) / sumPcs : 0;
-        biayaRibPer = sumPcs > 0 ? (totalBiayaRib * susutFactor) / sumPcs : 0;
+        biayaKainPer = sumPcs > 0 ? totalBiayaKain / sumPcs : 0;
+        biayaRibPer = sumPcs > 0 ? totalBiayaRib / sumPcs : 0;
       } else {
         var hKainA = toNum($("hargaKainA").value), gKainA = toNum($("gramKainA").value);
         var hRibA = toNum($("hargaRibA").value), gRibA = toNum($("gramRibA").value);
@@ -440,6 +481,8 @@
       }
 
       var hppBahan = biayaKainPer + biayaRibPer;
+      hppOverall = hppBahan;
+      if (mode === "analisa") { hppKat.Dewasa = hppBahan; hppKat.Anak = hppBahan; }
       $("outBiayaKain").textContent = formatRp(biayaKainPer);
       $("outBiayaRib").textContent = formatRp(biayaRibPer);
       $("outHppBahan").textContent = formatRp(hppBahan);
@@ -452,6 +495,7 @@
       $("modeAnalisa").classList.toggle("active", mode === "analisa");
       $("formProduksi").hidden = mode !== "produksi";
       $("formAnalisa").hidden = mode !== "analisa";
+      $("hppKatBox").hidden = mode !== "produksi";
       recalcAll();
     }
 
@@ -462,6 +506,7 @@
       tr.innerHTML =
         '<td class="rownum"></td>' +
         '<td class="text"><input type="text"   class="f-nama"       placeholder="Nama design"></td>' +
+        '<td><select class="f-kategori"><option value="Dewasa">Dewasa</option><option value="Anak">Anak</option></select></td>' +
         '<td><input type="number" class="f-jumlah"    min="0" step="1"    placeholder="0"></td>' +
         '<td><input type="number" class="f-jahit"     min="0" step="500"  placeholder="0"></td>' +
         '<td><input type="number" class="f-sablon"    min="0" step="500"  placeholder="0"></td>' +
@@ -477,6 +522,7 @@
         '<td><button class="row-del" title="Hapus baris">&times;</button></td>';
 
       tr.querySelector(".f-nama").value = data.nama || "";
+      tr.querySelector(".f-kategori").value = data.kategori || "Dewasa";
       tr.querySelector(".f-jumlah").value = data.jumlah || "";
       tr.querySelector(".f-jahit").value = data.jahit || "";
       tr.querySelector(".f-sablon").value = data.sablon || "";
@@ -485,6 +531,7 @@
       tr.querySelector(".f-aktual").value = data.aktual || "";
 
       tr.addEventListener("input", recalcAll);
+      tr.addEventListener("change", recalcAll);
       tr.querySelector(".row-del").addEventListener("click", function () {
         tr.parentNode.removeChild(tr); recalcAll();
       });
@@ -492,9 +539,11 @@
       return tr;
     }
 
-    function computeRow(tr, hppBahan) {
+    function computeRow(tr) {
       var margin = toNum($("margin").value) / 100;
       var nama = tr.querySelector(".f-nama").value;
+      var kategori = tr.querySelector(".f-kategori").value;
+      var hppBahan = (hppKat[kategori] != null && hppKat[kategori] > 0) ? hppKat[kategori] : hppOverall;
       var jumlah = toNum(tr.querySelector(".f-jumlah").value);
       var jahit = toNum(tr.querySelector(".f-jahit").value);
       var sablon = toNum(tr.querySelector(".f-sablon").value);
@@ -510,13 +559,13 @@
       var totalJual = hargaJual * jumlah;
       var laba = totalJual - totalModal;
 
-      return { nama: nama, jumlah: jumlah, jahit: jahit, sablon: sablon, lain: lain, transport: transport,
+      return { nama: nama, kategori: kategori, jumlah: jumlah, jahit: jahit, sablon: sablon, lain: lain, transport: transport,
         hppBahan: hppBahan, hppAkhir: hppAkhir, hargaSaran: hargaSaran, aktual: aktual,
         hargaJual: hargaJual, totalModal: totalModal, totalJual: totalJual, laba: laba };
     }
 
-    function recalcRow(tr, hppBahan) {
-      var d = computeRow(tr, hppBahan);
+    function recalcRow(tr) {
+      var d = computeRow(tr);
       tr.querySelector(".o-hppbahan").textContent = formatRp(d.hppBahan);
       tr.querySelector(".o-hppakhir").textContent = formatRp(d.hppAkhir);
       tr.querySelector(".o-jual").textContent = formatRp(d.hargaSaran);
@@ -527,11 +576,11 @@
     }
 
     function recalcAll() {
-      var hppBahan = hitungHppBahan();
+      hitungHppBahan();
       var sumQty = 0, sumModal = 0, sumJual = 0, sumLaba = 0;
       tbody.querySelectorAll("tr").forEach(function (tr, i) {
         tr.querySelector(".rownum").textContent = i + 1;
-        var d = recalcRow(tr, hppBahan);
+        var d = recalcRow(tr);
         sumQty += d.jumlah; sumModal += d.totalModal; sumJual += d.totalJual; sumLaba += d.laba;
       });
       $("sumQty").textContent = formatPcs(sumQty);
@@ -557,13 +606,15 @@
           kategori: tr.querySelector(".p-kategori").value,
           ukuran: tr.querySelector(".p-ukuran").value,
           pesan: tr.querySelector(".p-pesan").value,
-          lebih: tr.querySelector(".p-lebih").value
+          lebih: tr.querySelector(".p-lebih").value,
+          bobot: tr.querySelector(".p-bobot").value
         });
       });
       var rows = [];
       tbody.querySelectorAll("tr").forEach(function (tr) {
         rows.push({
           nama: tr.querySelector(".f-nama").value,
+          kategori: tr.querySelector(".f-kategori").value,
           jumlah: tr.querySelector(".f-jumlah").value,
           jahit: tr.querySelector(".f-jahit").value,
           sablon: tr.querySelector(".f-sablon").value,
@@ -608,38 +659,44 @@
       if (mode === "produksi") {
         out.push("");
         out.push(line(["RINCIAN PRODUKSI"]));
-        out.push(line(["No","Kategori","Ukuran","Jml Pesanan","Kelebihan","Total pcs"]));
+        out.push(line(["No","Kategori","Ukuran","Jml Pesanan","Kelebihan","Bobot Kain","Total pcs","HPP Bahan/pcs"]));
+        var susutFactor = 1 + toNum($("susut").value) / 100;
+        var totMat = (toNum($("hargaKainP").value) * toNum($("kainBeliP").value) + toNum($("hargaRibP").value) * toNum($("ribBeliP").value)) * susutFactor;
+        var weighted = 0;
+        prodBody.querySelectorAll("tr").forEach(function (tr) {
+          weighted += (toNum(tr.querySelector(".p-pesan").value) + toNum(tr.querySelector(".p-lebih").value)) * getBobot(tr);
+        });
+        var costPerUnit = weighted > 0 ? totMat / weighted : 0;
         var n = 0, totPcs = 0;
         prodBody.querySelectorAll("tr").forEach(function (tr) {
           n++;
           var pesan = toNum(tr.querySelector(".p-pesan").value), lebih = toNum(tr.querySelector(".p-lebih").value);
-          var pcs = pesan + lebih; totPcs += pcs;
-          out.push(line([n, tr.querySelector(".p-kategori").value, tr.querySelector(".p-ukuran").value, pesan, lebih, pcs]));
+          var bobot = getBobot(tr), pcs = pesan + lebih; totPcs += pcs;
+          out.push(line([n, tr.querySelector(".p-kategori").value, tr.querySelector(".p-ukuran").value,
+            pesan, lebih, bobot, pcs, Math.round(costPerUnit * bobot)]));
         });
-        var susutFactor = 1 + toNum($("susut").value) / 100;
-        var totBiayaKain = toNum($("hargaKainP").value) * toNum($("kainBeliP").value) * susutFactor;
-        var totBiayaRib = toNum($("hargaRibP").value) * toNum($("ribBeliP").value) * susutFactor;
-        out.push(line(["","TOTAL","","","", totPcs]));
-        out.push(line(["Total Biaya Kain", Math.round(totBiayaKain)]));
-        out.push(line(["Total Biaya RIB", Math.round(totBiayaRib)]));
+        out.push(line(["","TOTAL","","","", "", totPcs, ""]));
+        out.push(line(["Total Biaya Bahan", Math.round(totMat)]));
+        out.push(line(["HPP Bahan Dewasa/pcs", Math.round(hppKat.Dewasa)]));
+        out.push(line(["HPP Bahan Anak/pcs", Math.round(hppKat.Anak)]));
       }
 
       out.push("");
-      out.push(line(["HPP Bahan / kaos (dipakai Tahap 2)", Math.round(hppBahan)]));
+      out.push(line(["HPP Bahan / kaos (rata-rata keseluruhan)", Math.round(hppBahan)]));
       out.push("");
       out.push(line(["TAHAP 2 - DESIGN"]));
-      out.push(line(["No","Design","Jumlah","Ongkos Jahit","Ongkos Sablon","Biaya Lain","Transport",
+      out.push(line(["No","Design","Kategori","Jumlah","Ongkos Jahit","Ongkos Sablon","Biaya Lain","Transport",
                      "HPP Bahan/pcs","HPP Akhir/pcs","Harga Saran/pcs","Harga Aktual/pcs","Total Modal","Total Jual","Laba"]));
       var i = 0, sumQty = 0, sumModal = 0, sumJual = 0, sumLaba = 0;
       tbody.querySelectorAll("tr").forEach(function (tr) {
         i++;
-        var d = computeRow(tr, hppBahan);
+        var d = computeRow(tr);
         sumQty += d.jumlah; sumModal += d.totalModal; sumJual += d.totalJual; sumLaba += d.laba;
-        out.push(line([i, d.nama, d.jumlah, d.jahit, d.sablon, d.lain, d.transport,
+        out.push(line([i, d.nama, d.kategori, d.jumlah, d.jahit, d.sablon, d.lain, d.transport,
           Math.round(d.hppBahan), Math.round(d.hppAkhir), Math.round(d.hargaSaran), d.aktual || "",
           Math.round(d.totalModal), Math.round(d.totalJual), Math.round(d.laba)]));
       });
-      out.push(line(["","TOTAL", sumQty, "", "", "", "", "", "", "", "", Math.round(sumModal), Math.round(sumJual), Math.round(sumLaba)]));
+      out.push(line(["","TOTAL","", sumQty, "", "", "", "", "", "", "", "", Math.round(sumModal), Math.round(sumJual), Math.round(sumLaba)]));
       out.push(line(["Margin Riil (%)", sumModal > 0 ? ((sumLaba / sumModal) * 100).toFixed(1) : 0]));
 
       var csv = "\uFEFF" + out.join("\n");
@@ -657,13 +714,13 @@
       $("kainBeliP").value = 30; $("ribBeliP").value = 3.6;
       $("susut").value = 0; $("margin").value = 40;
       prodBody.innerHTML = "";
-      createProdRow({ kategori: "Dewasa", ukuran: "M", pesan: 60, lebih: 5 });
-      createProdRow({ kategori: "Dewasa", ukuran: "L", pesan: 30, lebih: 3 });
-      createProdRow({ kategori: "Anak", ukuran: "M (8-9th)", pesan: 25, lebih: 2 });
+      createProdRow({ kategori: "Dewasa", ukuran: "M", pesan: 60, lebih: 5, bobot: 1 });
+      createProdRow({ kategori: "Dewasa", ukuran: "L", pesan: 30, lebih: 3, bobot: 1.1 });
+      createProdRow({ kategori: "Anak", ukuran: "M (8-9th)", pesan: 25, lebih: 2, bobot: 0.6 });
       tbody.innerHTML = "";
-      createRow({ nama: "Logo Depan 1 Warna", jumlah: 60, jahit: 8000, sablon: 7000, lain: 3000, transport: 25000 });
-      createRow({ nama: "Full Print Belakang", jumlah: 30, jahit: 8000, sablon: 12000, lain: 3000, transport: 25000, aktual: 75000 });
-      createRow({ nama: "Sablon Anak", jumlah: 27, jahit: 6000, sablon: 6000, lain: 2500, transport: 20000 });
+      createRow({ nama: "Logo Depan 1 Warna", kategori: "Dewasa", jumlah: 60, jahit: 8000, sablon: 7000, lain: 3000, transport: 25000 });
+      createRow({ nama: "Full Print Belakang", kategori: "Dewasa", jumlah: 33, jahit: 8000, sablon: 12000, lain: 3000, transport: 25000, aktual: 75000 });
+      createRow({ nama: "Sablon Anak", kategori: "Anak", jumlah: 27, jahit: 6000, sablon: 6000, lain: 2500, transport: 20000 });
       setMode("produksi");
     }
     function resetAll() {
