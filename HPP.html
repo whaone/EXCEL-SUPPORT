@@ -170,10 +170,12 @@
 
       <!-- ====================== FORM: SUDAH PRODUKSI ====================== -->
       <div id="formProduksi">
-        <div class="subhead"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>Harga Bahan</div>
+        <div class="subhead"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>Harga &amp; Pembelian Bahan</div>
         <div class="grid">
           <div class="field"><label>Harga Kain <span class="hint">(Rp / Kg)</span></label><input type="number" id="hargaKainP" min="0" step="500" placeholder="contoh 95000" /></div>
+          <div class="field"><label>Jumlah Kain Dibeli <span class="hint">(Kg)</span></label><input type="number" id="kainBeliP" min="0" step="0.1" placeholder="contoh 30" /></div>
           <div class="field"><label>Harga RIB <span class="hint">(Rp / Kg)</span></label><input type="number" id="hargaRibP" min="0" step="500" placeholder="contoh 110000" /></div>
+          <div class="field"><label>Jumlah RIB Dibeli <span class="hint">(Kg)</span></label><input type="number" id="ribBeliP" min="0" step="0.1" placeholder="contoh 3.6" /></div>
         </div>
 
         <div class="subhead"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7l9-4 9 4-9 4-9-4zM3 7v10l9 4 9-4V7"/></svg>Rincian Hasil Produksi (per kategori &amp; ukuran)</div>
@@ -181,8 +183,7 @@
           <table class="compact">
             <thead>
               <tr>
-                <th>#</th><th>Kategori</th><th>Ukuran</th><th>Jml<br>Pesanan</th><th>Kelebihan<br>(pcs)</th>
-                <th>Kain<br>(g/pcs)</th><th>RIB<br>(g/pcs)</th><th>Total<br>pcs</th><th>Kain<br>Terpakai</th><th>HPP Bahan<br>/pcs</th><th></th>
+                <th>#</th><th>Kategori</th><th>Ukuran</th><th>Jml<br>Pesanan</th><th>Kelebihan<br>(pcs)</th><th>Total<br>pcs</th><th></th>
               </tr>
             </thead>
             <tbody id="prodRows"></tbody>
@@ -191,10 +192,8 @@
                 <td colspan="3" style="text-align:left;">TOTAL</td>
                 <td class="num" id="pSumPesan">0</td>
                 <td class="num" id="pSumLebih">0</td>
-                <td colspan="2"></td>
                 <td class="num" id="pSumPcs">0</td>
-                <td class="num" id="pSumKain">0 Kg</td>
-                <td colspan="2"></td>
+                <td></td>
               </tr>
             </tfoot>
           </table>
@@ -203,22 +202,16 @@
           <button class="btn btn-gold" id="btnAddProd"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14M5 12h14"/></svg>Tambah Baris</button>
         </div>
 
-        <div class="subhead"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7L12 3 4 7v10l8 4 8-4V7zM4 7l8 4 8-4"/></svg>Cek Pemakaian Bahan <span style="text-transform:none;letter-spacing:0;color:var(--muted);font-weight:500;">(opsional)</span></div>
-        <div class="grid" style="max-width:520px;">
-          <div class="field"><label>Kain Dibeli <span class="hint">(Kg)</span></label><input type="number" id="kainBeliP" min="0" step="0.1" placeholder="contoh 30" /></div>
-          <div class="field"><label>RIB Dibeli <span class="hint">(Kg)</span></label><input type="number" id="ribBeliP" min="0" step="0.1" placeholder="contoh 3.6" /></div>
-        </div>
         <div class="buy-box">
-          <div class="bt">Rekap Pemakaian &amp; Sisa Bahan</div>
+          <div class="bt">Rekap Biaya Bahan</div>
           <div class="buy-grid">
             <div class="bi"><div class="k">Total Pcs Jadi</div><div class="v num" id="prodTotalPcs">0 pcs</div></div>
-            <div class="bi"><div class="k">Kain Terpakai</div><div class="v num" id="prodKainPakai">0 Kg</div></div>
-            <div class="bi"><div class="k">RIB Terpakai</div><div class="v num" id="prodRibPakai">0 Kg</div></div>
-            <div class="bi"><div class="k">Sisa Kain</div><div class="v num" id="prodSisaKain">-</div></div>
-            <div class="bi"><div class="k">Sisa RIB</div><div class="v num" id="prodSisaRib">-</div></div>
+            <div class="bi"><div class="k">Total Biaya Kain</div><div class="v num" id="prodBiayaKain">Rp0</div></div>
+            <div class="bi"><div class="k">Total Biaya RIB</div><div class="v num" id="prodBiayaRib">Rp0</div></div>
+            <div class="bi"><div class="k">Total Biaya Bahan</div><div class="v num" id="prodBiayaTotal">Rp0</div></div>
           </div>
         </div>
-        <p class="note">HPP bahan/pcs dihitung presisi per baris: <b>(Harga Kain/Kg &times; g/1000) + (Harga RIB/Kg &times; g/1000)</b>, lalu disesuaikan susut. Total pcs sudah termasuk <b>kelebihan produksi</b>. Nilai yang dipakai di Tahap 2 adalah <b>rata-rata tertimbang</b> seluruh produksi.</p>
+        <p class="note">Rumus: <b>(Harga Kain/Kg &times; Kg dibeli + Harga RIB/Kg &times; Kg dibeli) &divide; Total pcs jadi</b> &mdash; sesuai perhitungan manualmu. Total pcs sudah termasuk <b>kelebihan produksi</b>. <i>(Kebutuhan kain/RIB per ukuran untuk presisi bisa dipakai nanti di mode Analisa.)</i></p>
       </div>
 
       <!-- ====================== FORM: ANALISA KEBUTUHAN ====================== -->
@@ -383,19 +376,13 @@
         '<td class="text"><input type="text"   class="p-ukuran" placeholder="M / L / 4-5th"></td>' +
         '<td><input type="number" class="p-pesan" min="0" step="1"  placeholder="0"></td>' +
         '<td><input type="number" class="p-lebih" min="0" step="1"  placeholder="0"></td>' +
-        '<td><input type="number" class="p-gkain" min="0" step="5"  placeholder="0"></td>' +
-        '<td><input type="number" class="p-grib"  min="0" step="1"  placeholder="0"></td>' +
         '<td class="calc p-pcs">0</td>' +
-        '<td class="calc p-kainpakai">0 Kg</td>' +
-        '<td class="calc p-hpp">Rp0</td>' +
         '<td><button class="row-del" title="Hapus baris">&times;</button></td>';
 
       tr.querySelector(".p-kategori").value = data.kategori || "Dewasa";
       tr.querySelector(".p-ukuran").value = data.ukuran || "";
       tr.querySelector(".p-pesan").value = data.pesan || "";
       tr.querySelector(".p-lebih").value = data.lebih || "";
-      tr.querySelector(".p-gkain").value = data.gkain || "";
-      tr.querySelector(".p-grib").value = data.grib || "";
 
       tr.addEventListener("input", recalcAll);
       tr.addEventListener("change", recalcAll);
@@ -412,44 +399,32 @@
       var biayaKainPer = 0, biayaRibPer = 0;
 
       if (mode === "produksi") {
-        var hKain = toNum($("hargaKainP").value), hRib = toNum($("hargaRibP").value);
-        var sumPcs = 0, sumPesan = 0, sumLebih = 0, sumKain = 0, sumRib = 0, sumMatKain = 0, sumMatRib = 0;
+        var hKain = toNum($("hargaKainP").value), kgKain = toNum($("kainBeliP").value);
+        var hRib = toNum($("hargaRibP").value), kgRib = toNum($("ribBeliP").value);
+        var sumPcs = 0, sumPesan = 0, sumLebih = 0;
 
         prodBody.querySelectorAll("tr").forEach(function (tr, i) {
           tr.querySelector(".pnum").textContent = i + 1;
           var pesan = toNum(tr.querySelector(".p-pesan").value);
           var lebih = toNum(tr.querySelector(".p-lebih").value);
-          var gK = toNum(tr.querySelector(".p-gkain").value);
-          var gR = toNum(tr.querySelector(".p-grib").value);
           var pcs = pesan + lebih;
-          var bKain = hKain * (gK / 1000) * susutFactor;
-          var bRib = hRib * (gR / 1000) * susutFactor;
-          var kainKg = pcs * (gK / 1000) * susutFactor;
-          var ribKg = pcs * (gR / 1000) * susutFactor;
-
           tr.querySelector(".p-pcs").textContent = formatPcs(pcs);
-          tr.querySelector(".p-kainpakai").textContent = formatKg(kainKg);
-          tr.querySelector(".p-hpp").textContent = formatRp(bKain + bRib);
-
           sumPcs += pcs; sumPesan += pesan; sumLebih += lebih;
-          sumKain += kainKg; sumRib += ribKg;
-          sumMatKain += bKain * pcs; sumMatRib += bRib * pcs;
         });
 
         $("pSumPesan").textContent = formatPcs(sumPesan);
         $("pSumLebih").textContent = formatPcs(sumLebih);
         $("pSumPcs").textContent = formatPcs(sumPcs);
-        $("pSumKain").textContent = formatKg(sumKain);
 
+        var totalBiayaKain = hKain * kgKain;
+        var totalBiayaRib = hRib * kgRib;
         $("prodTotalPcs").textContent = formatPcs(sumPcs) + " pcs";
-        $("prodKainPakai").textContent = formatKg(sumKain);
-        $("prodRibPakai").textContent = formatKg(sumRib);
-        var beliK = toNum($("kainBeliP").value), beliR = toNum($("ribBeliP").value);
-        $("prodSisaKain").textContent = beliK > 0 ? formatKg(beliK - sumKain) : "-";
-        $("prodSisaRib").textContent = beliR > 0 ? formatKg(beliR - sumRib) : "-";
+        $("prodBiayaKain").textContent = formatRp(totalBiayaKain * susutFactor);
+        $("prodBiayaRib").textContent = formatRp(totalBiayaRib * susutFactor);
+        $("prodBiayaTotal").textContent = formatRp((totalBiayaKain + totalBiayaRib) * susutFactor);
 
-        biayaKainPer = sumPcs > 0 ? sumMatKain / sumPcs : 0;
-        biayaRibPer = sumPcs > 0 ? sumMatRib / sumPcs : 0;
+        biayaKainPer = sumPcs > 0 ? (totalBiayaKain * susutFactor) / sumPcs : 0;
+        biayaRibPer = sumPcs > 0 ? (totalBiayaRib * susutFactor) / sumPcs : 0;
       } else {
         var hKainA = toNum($("hargaKainA").value), gKainA = toNum($("gramKainA").value);
         var hRibA = toNum($("hargaRibA").value), gRibA = toNum($("gramRibA").value);
@@ -582,9 +557,7 @@
           kategori: tr.querySelector(".p-kategori").value,
           ukuran: tr.querySelector(".p-ukuran").value,
           pesan: tr.querySelector(".p-pesan").value,
-          lebih: tr.querySelector(".p-lebih").value,
-          gkain: tr.querySelector(".p-gkain").value,
-          grib: tr.querySelector(".p-grib").value
+          lebih: tr.querySelector(".p-lebih").value
         });
       });
       var rows = [];
@@ -635,18 +608,20 @@
       if (mode === "produksi") {
         out.push("");
         out.push(line(["RINCIAN PRODUKSI"]));
-        out.push(line(["No","Kategori","Ukuran","Jml Pesanan","Kelebihan","Kain g/pcs","RIB g/pcs","Total pcs","Kain Terpakai (Kg)","HPP Bahan/pcs"]));
-        var susutFactor = 1 + toNum($("susut").value) / 100;
-        var hKain = toNum($("hargaKainP").value), hRib = toNum($("hargaRibP").value), n = 0;
+        out.push(line(["No","Kategori","Ukuran","Jml Pesanan","Kelebihan","Total pcs"]));
+        var n = 0, totPcs = 0;
         prodBody.querySelectorAll("tr").forEach(function (tr) {
           n++;
           var pesan = toNum(tr.querySelector(".p-pesan").value), lebih = toNum(tr.querySelector(".p-lebih").value);
-          var gK = toNum(tr.querySelector(".p-gkain").value), gR = toNum(tr.querySelector(".p-grib").value);
-          var pcs = pesan + lebih;
-          var bKain = hKain * (gK / 1000) * susutFactor, bRib = hRib * (gR / 1000) * susutFactor;
-          out.push(line([n, tr.querySelector(".p-kategori").value, tr.querySelector(".p-ukuran").value,
-            pesan, lebih, gK, gR, pcs, (pcs * gK / 1000 * susutFactor).toFixed(2), Math.round(bKain + bRib)]));
+          var pcs = pesan + lebih; totPcs += pcs;
+          out.push(line([n, tr.querySelector(".p-kategori").value, tr.querySelector(".p-ukuran").value, pesan, lebih, pcs]));
         });
+        var susutFactor = 1 + toNum($("susut").value) / 100;
+        var totBiayaKain = toNum($("hargaKainP").value) * toNum($("kainBeliP").value) * susutFactor;
+        var totBiayaRib = toNum($("hargaRibP").value) * toNum($("ribBeliP").value) * susutFactor;
+        out.push(line(["","TOTAL","","","", totPcs]));
+        out.push(line(["Total Biaya Kain", Math.round(totBiayaKain)]));
+        out.push(line(["Total Biaya RIB", Math.round(totBiayaRib)]));
       }
 
       out.push("");
@@ -682,9 +657,9 @@
       $("kainBeliP").value = 30; $("ribBeliP").value = 3.6;
       $("susut").value = 0; $("margin").value = 40;
       prodBody.innerHTML = "";
-      createProdRow({ kategori: "Dewasa", ukuran: "M", pesan: 60, lebih: 5, gkain: 250, grib: 30 });
-      createProdRow({ kategori: "Dewasa", ukuran: "L", pesan: 30, lebih: 3, gkain: 270, grib: 32 });
-      createProdRow({ kategori: "Anak", ukuran: "M (8-9th)", pesan: 25, lebih: 2, gkain: 150, grib: 20 });
+      createProdRow({ kategori: "Dewasa", ukuran: "M", pesan: 60, lebih: 5 });
+      createProdRow({ kategori: "Dewasa", ukuran: "L", pesan: 30, lebih: 3 });
+      createProdRow({ kategori: "Anak", ukuran: "M (8-9th)", pesan: 25, lebih: 2 });
       tbody.innerHTML = "";
       createRow({ nama: "Logo Depan 1 Warna", jumlah: 60, jahit: 8000, sablon: 7000, lain: 3000, transport: 25000 });
       createRow({ nama: "Full Print Belakang", jumlah: 30, jahit: 8000, sablon: 12000, lain: 3000, transport: 25000, aktual: 75000 });
